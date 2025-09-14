@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de-AT">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>CBAM Quick Calculator</title>
+  <title>CBAM Schnellrechner</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root{
       --bg:#f6f7fb; --card:#ffffff; --ink:#0f172a; --muted:#6b7280; --accent:#ef4444;
-      --bord:#e5e7eb; --radius:16px;
+      --bord:#e5e7eb;
+      --radius:16px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -56,104 +57,107 @@
     .btn.primary{background:var(--accent); color:#fff}
     .btn.ghost{background:#f3f4f6; color:#111827}
     .btn:active{transform:translateY(1px)}
-    .actions{display:flex; gap:12px; margin-top:8px; flex-wrap:wrap}
+    .actions{display:flex; gap:12px; margin-top:8px}
     .result-empty{
       color:var(--muted); text-align:center; padding:48px 16px; display:flex; gap:16px; flex-direction:column; align-items:center;
     }
+    .pill{display:inline-block; padding:4px 10px; border:1px solid var(--bord); border-radius:999px; font-size:12px; color:var(--muted)}
     .totals{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px}
     .kpi{background:#f8fafc; border:1px solid var(--bord); border-radius:12px; padding:12px}
     .kpi label{display:block; font-size:12px; color:var(--muted)}
     .kpi strong{font-size:18px}
-    canvas#costChart{display:none; width:100% !important; height:360px !important;}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1 class="title">CBAM Quick Calculator</h1>
-    <p class="subtitle">Enter import details → see Material, Transport, and CBAM cost per tonne. No external pricing widgets. No data transmission.</p>
+    <h1 class="title">CBAM Schnellrechner</h1>
+    <p class="subtitle">Importdaten eingeben → saubere Kostenaufschlüsselung (Material, Transport, CBAM). Keine externen Anzeigen, keine Datenübermittlung.</p>
 
     <div class="grid">
-      <!-- LEFT: INPUTS -->
+      <!-- LINKS: EINGABEN -->
       <div class="card">
-        <h3>📦 Import Details</h3>
+        <h3>📦 Importdetails</h3>
         <div class="card-body">
+
           <div class="row">
-            <div class="label">Supplier Type</div>
+            <div class="label">Lieferantentyp</div>
             <div class="toggle inline">
-              <span>Non-EU Supplier</span>
-              <label class="switch" title="Toggle to EU supplier (no CBAM)">
-                <input id="euToggle" type="checkbox" aria-label="EU Supplier toggle">
+              <span>Drittland-Lieferant</span>
+              <label class="switch">
+                <input id="euToggle" type="checkbox" aria-label="EU-Lieferant umschalten">
                 <span class="knob"></span>
               </label>
-              <span>EU Supplier</span>
+              <span>EU-Lieferant</span>
+              <span class="pill">CBAM gilt nur für Nicht-EU</span>
             </div>
           </div>
 
           <div class="row">
-            <div class="label">CN Code</div>
-            <input id="cnCode" type="text" placeholder="e.g., 72072000" inputmode="numeric" />
-            <div class="hint">Used to auto-fill a default emissions intensity if available.</div>
+            <div class="label">Warennummer (KN-Code)</div>
+            <input id="cnCode" type="text" placeholder="z. B. 72072000" inputmode="numeric" />
+            <div class="hint">Für Standard-Emissionswerte (Demo-Satz) zur Auto-Befüllung.</div>
           </div>
 
           <div class="row">
             <div class="label">Tonnage</div>
-            <input id="tonnage" type="number" min="0" step="0.01" placeholder="Enter tonnage" />
+            <input id="tonnage" type="number" min="0" step="0.01" placeholder="Tonnage eingeben" />
           </div>
 
           <div class="row">
-            <div class="label">Supplier Name</div>
-            <input id="supplier" type="text" placeholder="Enter supplier name" />
+            <div class="label">Lieferantenname</div>
+            <input id="supplier" type="text" placeholder="Name des Lieferanten" />
           </div>
 
           <div class="row inline" style="align-items:flex-end">
             <div style="flex:1">
-              <div class="label">Supplier emissions intensity (tCO₂e/tonne)</div>
-              <input id="intensity" type="number" min="0" step="0.01" placeholder="Enter emissions intensity" />
-              <div class="hint">Or click “Use Default” to auto-fill from CN code.</div>
+              <div class="label">Emissionsintensität des Lieferanten (tCO₂e/Tonne)</div>
+              <input id="intensity" type="number" min="0" step="0.01" placeholder="Emissionsintensität eingeben" />
+              <div class="hint">Oder „Standard nutzen“ klicken, um aus KN-Code zu befüllen (Demo).</div>
             </div>
-            <button id="btnDefault" class="btn ghost">Use Default</button>
+            <button id="btnDefault" class="btn ghost">Standard nutzen</button>
           </div>
 
           <div class="row">
-            <div class="label">Material Cost (€/tonne)</div>
-            <input id="matCost" type="number" min="0" step="0.01" placeholder="Enter material cost per tonne" />
+            <div class="label">Materialkosten (€/Tonne)</div>
+            <input id="matCost" type="number" min="0" step="0.01" placeholder="Materialkosten je Tonne" />
           </div>
 
           <div class="row">
-            <div class="label">Transport Cost (€/tonne)</div>
-            <input id="transCost" type="number" min="0" step="0.01" placeholder="Enter transport cost per tonne" />
+            <div class="label">Transportkosten (€/Tonne)</div>
+            <input id="transCost" type="number" min="0" step="0.01" placeholder="Transportkosten je Tonne" />
           </div>
 
           <div class="actions">
-            <button id="calcBtn" class="btn primary">🧮 Calculate CBAM</button>
-            <button id="resetBtn" class="btn ghost">Reset</button>
+            <button id="calcBtn" class="btn primary">🧮 CBAM berechnen</button>
+            <button id="resetBtn" class="btn ghost">Zurücksetzen</button>
           </div>
+
         </div>
       </div>
 
-      <!-- RIGHT: RESULTS -->
+      <!-- RECHTS: ERGEBNIS -->
       <div class="card">
-        <h3>📈 Calculation Results</h3>
+        <h3>📈 Ergebnis</h3>
         <div class="card-body" id="resultsBox">
           <div id="emptyState" class="result-empty">
             <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M3 19h18M7 19V5h10v14M9 9h6M9 13h6" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/></svg>
-            <div><strong>Ready to Calculate</strong></div>
-            <div>Enter your import details to calculate CBAM requirements</div>
+            <div><strong>Bereit zur Berechnung</strong></div>
+            <div>Daten eingeben, um CBAM-Anforderungen zu kalkulieren</div>
           </div>
 
-          <canvas id="costChart"></canvas>
+          <canvas id="costChart" style="display:none;max-height:360px"></canvas>
 
           <div id="kpis" class="totals" style="display:none">
             <div class="kpi">
-              <label>CBAM cost (€/t)</label>
+              <label>CBAM-Kosten (€/t)</label>
               <strong id="kpiCbamPt">0</strong>
             </div>
             <div class="kpi">
-              <label>Total landed cost (€/t)</label>
+              <label>Gesamt (€/t)</label>
               <strong id="kpiLandedPt">0</strong>
             </div>
             <div class="kpi">
-              <label>Order total (all tonnes)</label>
+              <label>Auftragssumme (alle t)</label>
               <strong id="kpiTotalAll">0</strong>
             </div>
           </div>
@@ -164,26 +168,28 @@
   </div>
 
   <script>
-    // ============================
-    // Internal pricing assumptions
-    // ============================
+    // -----------------------------------------
+    // Interne Konstanten (nicht in der UI sichtbar)
+    // -----------------------------------------
 
-    // RALEPA-based EUA price path (€/tCO2e), baked-in and NOT displayed.
-    // Years outside 2026–2034 clamp to nearest endpoint.
-    const RALEPA_EUA_EUR_PER_T = {
+    // RALEPA-basiertes EUA-Preisprofil (€/tCO2e) – Jahre 2026–2034.
+    // (Wird intern verwendet; keine Anzeige/Manuelle Steuerung in der UI.)
+    // Hinweis: Falls Jahr außerhalb, wird auf Randjahr begrenzt.
+    const RALEPA_EUA_PREIS = {
       2026: 120,
-      2027: 125,
-      2028: 135,
-      2029: 145,
-      2030: 155,
-      2031: 165,
-      2032: 172,
-      2033: 178,
-      2034: 182
+      2027: 126,
+      2028: 132,
+      2029: 138,
+      2030: 146,
+      2031: 154,
+      2032: 162,
+      2033: 171,
+      2034: 180
     };
 
-    // CBAM phase-in factor by year (share of embedded emissions charged).
-    const CBAM_FACTOR_BY_YEAR = {
+    // CBAM-Phasenfaktor (Anteil der eingebetteten Emissionen, der tatsächlich zu bepreisen ist)
+    // – interne Annäherung, konsistent über die Jahre. Keine Anzeige in der UI.
+    const CBAM_FAKTOR = {
       2026: 0.20,
       2027: 0.35,
       2028: 0.45,
@@ -192,65 +198,57 @@
       2031: 0.75,
       2032: 0.88,
       2033: 0.95,
-      2034: 1.00,
-      2035: 1.00
+      2034: 1.00
     };
 
-    function currentYearClamped(){
+    function aktuellesJahrBegrenzt(){
       const y = new Date().getFullYear();
       if (y < 2026) return 2026;
       if (y > 2034) return 2034;
       return y;
     }
-    function getEUAPrice(){
-      const y = currentYearClamped();
-      return RALEPA_EUA_EUR_PER_T[y] ?? RALEPA_EUA_EUR_PER_T[2034];
+    function euaPreis() {
+      return RALEPA_EUA_PREIS[aktuellesJahrBegrenzt()] || 120;
     }
-    function getCbamFactor(){
-      const y = Math.min(Math.max(new Date().getFullYear(), 2026), 2035);
-      return CBAM_FACTOR_BY_YEAR[y] ?? 1;
+    function cbamFaktor() {
+      return CBAM_FAKTOR[aktuellesJahrBegrenzt()] || 1;
     }
 
-    // Minimal CN-code → default emissions intensity (tCO2e/t)
-    // Extend as needed; these are sensible demo defaults.
+    // Minimaler KN→Default-Satz (tCO2e/t) – Demo-Lookups für Auto-Befüllung
     const DEFAULTS = [
-      { pattern: /^720[0-9]{5}$/, label: "Generic steel", value: 2.20 },
-      { pattern: /^73/, label: "Steel articles (73xx)", value: 2.35 },
-      { pattern: /^7604/, label: "Aluminium bars/rods (7604)", value: 9.80 },
-      { pattern: /^7606/, label: "Aluminium plates/sheet (7606)", value: 12.11 },
-      { pattern: /^25232900$/, label: "Portland cement (2523 29 00)", value: 0.87 },
-      { pattern: /^25232100$/, label: "White cement (2523 21 00)", value: 1.26 },
-      { pattern: /^310210/, label: "Urea (3102 10)", value: 1.90 },
-      { pattern: /^281410/, label: "Ammonia (2814 10)", value: 2.82 }
+      { pattern: /^720[0-9]{5}$/, label: "Stahl (generisch)", value: 2.20 },
+      { pattern: /^7604/,         label: "Aluminium Stäbe/Drähte (7604)", value: 9.80 },
+      { pattern: /^7606/,         label: "Aluminium Bleche/Platten (7606)", value: 12.11 },
+      { pattern: /^25232900$/,    label: "Portlandzement (2523 29 00)", value: 0.87 },
+      { pattern: /^25232100$/,    label: "Weißzement (2523 21 00)", value: 1.26 },
+      { pattern: /^310210/,       label: "Harnstoff/Urea (3102 10)", value: 1.90 },
+      { pattern: /^281410/,       label: "Ammoniak (2814 10)", value: 2.82 }
     ];
     function lookupDefaultIntensity(cn){
       if(!cn) return null;
       const code = String(cn).replace(/\s|\.|-/g,'').trim();
-      for(const row of DEFAULTS){
-        if(row.pattern.test(code)){ return { value: row.value, label: row.label }; }
-      }
-      if(/^76/.test(code)) return { value: 10.5, label: "Aluminium (generic)" };
-      if(/^72/.test(code) || /^73/.test(code)) return { value: 2.3, label: "Steel (generic)" };
-      if(/^2523/.test(code)) return { value: 0.9, label: "Cement (generic)" };
-      if(/^31/.test(code)) return { value: 2.2, label: "Fertilizer (generic)" };
+      for(const row of DEFAULTS){ if(row.pattern.test(code)) return { value: row.value, label: row.label }; }
+      if(/^76/.test(code)) return { value: 10.5, label: "Aluminium (generisch)" };
+      if(/^72/.test(code) || /^73/.test(code)) return { value: 2.3, label: "Stahl (generisch)" };
+      if(/^2523/.test(code)) return { value: 0.9, label: "Zement (generisch)" };
+      if(/^31/.test(code))   return { value: 2.2, label: "Dünger (generisch)" };
       return null;
     }
 
-    // ============================
-    // UI helpers
-    // ============================
+    // -----------------------------------------
+    // DOM-Helfer
+    // -----------------------------------------
     const $ = (id)=>document.getElementById(id);
-    const fmt = (n)=> isFinite(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) : '-';
+    const fmt = (n)=> isFinite(n) ? Number(n).toLocaleString('de-AT',{maximumFractionDigits:2}) : '–';
 
     $('btnDefault').addEventListener('click', (e)=>{
       e.preventDefault();
-      const cn = $('cnCode').value;
-      const hit = lookupDefaultIntensity(cn);
+      const hit = lookupDefaultIntensity($('cnCode').value);
       if(hit){
         $('intensity').value = hit.value;
         $('intensity').dataset.source = hit.label;
       }else{
-        alert('No default available for this CN code.\nEnter intensity manually.');
+        alert('Kein Standardwert für diesen KN-Code gefunden.\nBitte Emissionsintensität manuell eingeben.');
       }
     });
 
@@ -267,41 +265,40 @@
       calculate();
     });
 
-    // ============================
-    // Core calc + chart
-    // ============================
+    // -----------------------------------------
+    // Kernberechnung & Chart
+    // -----------------------------------------
     let chart;
 
     function calculate(){
-      const isEU = $('euToggle').checked;           // if EU supplier -> CBAM = 0
+      const istEU = $('euToggle').checked;           // EU-Lieferant → CBAM = 0
       const tonnage = +($('tonnage').value || 0);
-      const intensity = +($('intensity').value || 0);
-      const mat = +($('matCost').value || 0);
-      const trans = +($('transCost').value || 0);
+      const intens  = +($('intensity').value || 0);
+      const mat     = +($('matCost').value || 0);
+      const trans   = +($('transCost').value || 0);
 
       if(tonnage<=0 || mat<0 || trans<0){
-        return alert('Please enter valid tonnage and cost values.');
+        return alert('Bitte gültige Tonnage sowie Material-/Transportkosten eingeben.');
       }
-      if(!isEU && intensity<=0){
-        return alert('Please enter emissions intensity (tCO₂e/t) or click “Use Default”.');
+      if(!istEU && intens<=0){
+        return alert('Bitte Emissionsintensität (tCO₂e/t) eingeben oder „Standard nutzen“ verwenden.');
       }
 
-      const EUA = getEUAPrice();     // hidden RALEPA €/t
-      const FACT = getCbamFactor();  // hidden CBAM phase-in fraction
+      // Verdeckte Preislogik: RALEPA EUA-Preis × CBAM-Phasenfaktor × Intensität
+      const preis = euaPreis();
+      const faktor = cbamFaktor();
+      const cbam_pro_t = istEU ? 0 : (intens * preis * faktor);
+      const gesamt_pro_t = mat + trans + cbam_pro_t;
+      const auftragssumme = gesamt_pro_t * tonnage;
 
-      // CBAM per tonne
-      const cbam_per_t = isEU ? 0 : (intensity * EUA * FACT);
-      const landed_per_t = mat + trans + cbam_per_t;
-      const order_total = landed_per_t * tonnage;
-
-      renderChart({mat, trans, cbam: cbam_per_t});
-      updateKPIs({cbam_per_t, landed_per_t, order_total});
+      renderChart({mat, trans, cbam: cbam_pro_t});
+      updateKPIs({cbam_pro_t, gesamt_pro_t, auftragssumme});
     }
 
-    function updateKPIs({cbam_per_t, landed_per_t, order_total}){
-      $('kpiCbamPt').textContent = fmt(cbam_per_t);
-      $('kpiLandedPt').textContent = fmt(landed_per_t);
-      $('kpiTotalAll').textContent = fmt(order_total);
+    function updateKPIs({cbam_pro_t, gesamt_pro_t, auftragssumme}){
+      $('kpiCbamPt').textContent   = fmt(cbam_pro_t);
+      $('kpiLandedPt').textContent = fmt(gesamt_pro_t);
+      $('kpiTotalAll').textContent = fmt(auftragssumme);
       $('kpis').style.display = 'grid';
     }
 
@@ -319,17 +316,16 @@
       $('emptyState').style.display = 'none';
       const ctx = $('costChart');
       ctx.style.display = 'block';
-      destroyChart();
 
-      // Stacked bar for clean composition
+      destroyChart();
       chart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Landed cost (€/t)'],
+          labels: ['€/Tonne – Aufschlüsselung'],
           datasets: [
-            {label:'Material', data:[mat], backgroundColor:'rgba(99,102,241,0.8)'},
-            {label:'Transport', data:[trans], backgroundColor:'rgba(59,130,246,0.8)'},
-            {label:'CBAM', data:[cbam], backgroundColor:'rgba(239,68,68,0.85)'}
+            {label:'Material',  data:[mat]},
+            {label:'Transport', data:[trans]},
+            {label:'CBAM',      data:[cbam]}
           ]
         },
         options: {
@@ -337,20 +333,17 @@
           maintainAspectRatio:false,
           plugins: {
             legend:{ position:'top' },
-            tooltip:{ callbacks:{ label:(c)=> `${c.dataset.label}: €${fmt(c.parsed.y)}` } },
-            title:{ display:true, text:'Cost Composition per Tonne' }
+            tooltip:{ callbacks:{
+              label:(c)=> `${c.dataset.label}: €${fmt(c.parsed.y)}`
+            }},
+            title:{ display:true, text:'Gesamtkosten je Tonne (€/t)' }
           },
           scales: {
-            x: { stacked:true },
-            y: { stacked:true, beginAtZero:true, ticks:{ callback:(v)=>'€'+fmt(v) } }
-          },
-          animation: { duration: 300 }
+            y: { beginAtZero:true, ticks:{ callback:(v)=>'€'+fmt(v) } }
+          }
         }
       });
     }
-
-    // Initial state
-    showEmpty();
   </script>
 </body>
 </html>
