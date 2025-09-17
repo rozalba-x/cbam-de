@@ -112,7 +112,7 @@
             <div style="flex:1">
               <div class="label">Emissionsintensität des Lieferanten (tCO₂e/Tonne)</div>
               <input id="intensity" type="number" min="0" step="0.01" placeholder="Emissionsintensität eingeben" />
-              <div class="hint">Oder „Standard nutzen“ klicken, um aus KN-Code zu befüllen (Demo).</div>
+              <div class="hint">Oder „Standard nutzen" klicken, um aus KN-Code zu befüllen (Demo).</div>
             </div>
             <button id="btnDefault" class="btn ghost">Standard nutzen</button>
           </div>
@@ -173,33 +173,74 @@
     // -----------------------------------------
 
     // RALEPA-basiertes EUA-Preisprofil (€/tCO2e) – Jahre 2026–2034.
-    // (Wird intern verwendet; keine Anzeige/Manuelle Steuerung in der UI.)
-    // Hinweis: Falls Jahr außerhalb, wird auf Randjahr begrenzt.
     const RALEPA_EUA_PREIS = {
-      2026: 120,
-      2027: 126,
-      2028: 132,
-      2029: 138,
-      2030: 146,
-      2031: 154,
+      2026: 90,
+      2027: 102,
+      2028: 114,
+      2029: 126,
+      2030: 138,
+      2031: 150,
       2032: 162,
-      2033: 171,
-      2034: 180
+      2033: 170,
+      2034: 178
     };
 
-    // CBAM-Phasenfaktor (Anteil der eingebetteten Emissionen, der tatsächlich zu bepreisen ist)
-    // – interne Annäherung, konsistent über die Jahre. Keine Anzeige in der UI.
+    // CBAM-Phasenfaktor (Free allowance percentages)
     const CBAM_FAKTOR = {
-      2026: 0.20,
-      2027: 0.35,
-      2028: 0.45,
-      2029: 0.53,
-      2030: 0.60,
-      2031: 0.75,
-      2032: 0.88,
-      2033: 0.95,
-      2034: 1.00
+      2026: 0.975,  // 97.5%
+      2027: 0.95,   // 95%
+      2028: 0.90,   // 90%
+      2029: 0.775,  // 77.5%
+      2030: 0.485,  // 48.5%
+      2031: 0.39,   // 39%
+      2032: 0.265,  // 26.5%
+      2033: 0.14,   // 14%
+      2034: 0.00    // 0%
     };
+
+    // ETS Benchmark values (tCO2e/t)
+    const BENCHMARKS = {
+      // Cement
+      '2523100': 0.693,   // Grey cement clinker
+      '2523210': 0.957,   // White Portland cement  
+      '2523290': 0.693,   // Other Portland cement
+      '2523900': 0.693,   // Other hydraulic cements
+      
+      // Fertilizers
+      '280800': 0.230,    // Nitric acid
+      '2814': 1.570,      // Ammonia
+      '310210': 1.570,    // Urea (proxy: ammonia)
+      '310230': 1.570,    // Ammonium nitrate (proxy: ammonia)
+      
+      // Aluminium  
+      '7601': 1.464,      // Unwrought aluminium
+      '7604': 1.464,      // Aluminium bars/profiles
+      '7606': 1.464,      // Aluminium sheets
+      
+      // Steel (examples)
+      '720610': 1.288,    // Ingots (hot metal benchmark)
+      '7208': 0.215,      // Flat-rolled hot (EAF carbon steel)
+      '7209': 0.215,      // Flat-rolled cold (EAF carbon steel)
+      
+      // Hydrogen
+      '280410': 6.84      // Hydrogen
+    };
+
+    function getBenchmark(cnCode) {
+      if (!cnCode) return 0;
+      const code = String(cnCode).replace(/\s|\.|-/g, '').trim();
+      
+      // Direct match
+      if (BENCHMARKS[code]) return BENCHMARKS[code];
+      
+      // Try shorter matches
+      for (let len = code.length - 1; len >= 4; len--) {
+        const prefix = code.substring(0, len);
+        if (BENCHMARKS[prefix]) return BENCHMARKS[prefix];
+      }
+      
+      return 0; // No benchmark found
+    }
 
     function aktuellesJahrBegrenzt(){
       const y = new Date().getFullYear();
@@ -208,7 +249,7 @@
       return y;
     }
     function euaPreis() {
-      return RALEPA_EUA_PREIS[aktuellesJahrBegrenzt()] || 120;
+      return RALEPA_EUA_PREIS[aktuellesJahrBegrenzt()] || 90;
     }
     function cbamFaktor() {
       return CBAM_FAKTOR[aktuellesJahrBegrenzt()] || 1;
@@ -281,13 +322,14 @@
         return alert('Bitte gültige Tonnage sowie Material-/Transportkosten eingeben.');
       }
       if(!istEU && intens<=0){
-        return alert('Bitte Emissionsintensität (tCO₂e/t) eingeben oder „Standard nutzen“ verwenden.');
+        return alert('Bitte Emissionsintensität (tCO₂e/t) eingeben oder „Standard nutzen" verwenden.');
       }
 
-      // Verdeckte Preislogik: RALEPA EUA-Preis × CBAM-Phasenfaktor × Intensität
+      // CBAM calculation: ((Embedded Emissions - (Benchmark × CBAM Factor)) × EUA Price)
       const preis = euaPreis();
       const faktor = cbamFaktor();
-      const cbam_pro_t = istEU ? 0 : (intens * preis * faktor);
+      const benchmark = getBenchmark($('cnCode').value);
+      const cbam_pro_t = istEU ? 0 : Math.max(0, (intens - (benchmark * faktor)) * preis);
       const gesamt_pro_t = mat + trans + cbam_pro_t;
       const auftragssumme = gesamt_pro_t * tonnage;
 
