@@ -220,7 +220,15 @@
       </div>
 
       <div id="product-calculator">
-        <h3 style="margin-bottom:15px;">Fügen Sie Ihre CBAM-Produkte hinzu:</h3>
+        <h3 style="margin-bottom:10px;">Fügen Sie Ihre CBAM-Produkte hinzu:</h3>
+
+        <!-- NEW: Toggle for including indirect (electricity) emissions -->
+        <div style="display:flex; align-items:center; gap:10px; margin: 0 0 15px 0;">
+          <input type="checkbox" id="include-indirect-toggle" checked onchange="toggleIncludeIndirect(this.checked)">
+          <label for="include-indirect-toggle" style="font-weight:600;">Indirekte Emissionen (Strom) berücksichtigen</label>
+          <small style="color:#555;">Hinweis: Stromemissionen sind land-/anlagenspezifisch.</small>
+        </div>
+
         <div id="products-container"></div>
         <button type="button" onclick="addProduct()" style="background:#060496; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; margin:10px 0;">+ Produkt hinzufügen</button>
       </div>
@@ -426,7 +434,7 @@
       2034: 1.0
     };
 
-    // Comprehensive CN code database with emission values and benchmarks
+    // Comprehensive CN code database with emission values and benchmarks (fallback only)
     const cnCodeDatabase = {
       // CEMENT
       "2507 00 80": { sector: "Cement", product: "Calcined clay", direct: 0.23, indirect: 0.08, total: 0.32, benchmark: null },
@@ -575,6 +583,7 @@
       }
     }
 
+    // (Original version will be overridden by the advanced version later)
     function updateFromCNCode(id) {
       const cnCode = document.getElementById(`cncode-${id}`).value.trim();
       const categorySelect = document.getElementById(`category-${id}`);
@@ -586,7 +595,6 @@
       if (cnCode && cnCodeDatabase[cnCode]) {
         const data = cnCodeDatabase[cnCode];
         
-        // Update category based on CN code
         const categoryMapping = {
           'Cement': 'cement',
           'Fertilisers': 'fertilizer', 
@@ -605,13 +613,11 @@
         productInfo.style.display = 'block';
         
       } else if (cnCode) {
-        // CN code entered but not in database
         productDetails.innerHTML = `CN-Code "${cnCode}" nicht in der Datenbank gefunden. Bitte Kategorie manuell auswählen.`;
         productInfo.style.display = 'block';
         emissionsInput.value = '';
         benchmarkInput.value = 0;
       } else {
-        // No CN code entered
         productInfo.style.display = 'none';
         emissionsInput.value = '';
         benchmarkInput.value = 0;
@@ -627,14 +633,13 @@
       const benchmarkInput = document.getElementById(`benchmark-${id}`);
       const cnCode = document.getElementById(`cncode-${id}`).value.trim();
       
-      // Don't override if CN code is already providing data
       if (cnCode && cnCodeDatabase[cnCode]) {
         return;
       }
       
       if (category && category !== 'custom') {
         emissionsInput.value = cbamDefaultValues[category] || 2.00;
-        benchmarkInput.value = 0; // Default values don't have benchmarks
+        benchmarkInput.value = 0;
       } else if (category === 'custom') {
         emissionsInput.value = cbamDefaultValues.custom;
         benchmarkInput.value = 0;
@@ -650,8 +655,6 @@
     function calculateCBAMCost(tonnage, emissions, benchmark, euaPrice, year) {
       const phaseInFactor = cbamPhaseIn[year] || 1.0;
       const effectiveBenchmark = benchmark || 0;
-      
-      // Formula: ((Embedded Emissions - (Benchmark × CBAM Factor)) × EUA Price)
       const cbamEmissions = Math.max(0, emissions - (effectiveBenchmark * phaseInFactor));
       return tonnage * cbamEmissions * euaPrice;
     }
@@ -712,7 +715,6 @@
         summary.style.display = 'block';
         chartContainer.style.display = 'block';
         
-        // Update cost chart
         setTimeout(() => {
           createCostChart(costs);
         }, 100);
@@ -729,7 +731,6 @@
       const years = Object.keys(costs);
       const costValues = Object.values(costs);
       
-      // Check if Chart.js is available
       if (typeof Chart === 'undefined') {
         console.log('⚠️ Chart.js not available for cost chart');
         return;
@@ -737,8 +738,6 @@
 
       try {
         const ctx = canvas.getContext('2d');
-        
-        // Destroy existing chart
         if (costProjectionChart && typeof costProjectionChart.destroy === 'function') {
           costProjectionChart.destroy();
         }
@@ -762,31 +761,19 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false
-              }
-            },
+            plugins: { legend: { display: false } },
             scales: {
               y: {
                 beginAtZero: true,
                 ticks: {
                   color: 'white',
-                  callback: function(value) {
-                    return '€' + Math.round(value).toLocaleString();
-                  }
+                  callback: function(value) { return '€' + Math.round(value).toLocaleString(); }
                 },
-                grid: {
-                  color: 'rgba(255,255,255,0.1)'
-                }
+                grid: { color: 'rgba(255,255,255,0.1)' }
               },
               x: {
-                ticks: {
-                  color: 'white'
-                },
-                grid: {
-                  color: 'rgba(255,255,255,0.1)'
-                }
+                ticks: { color: 'white' },
+                grid: { color: 'rgba(255,255,255,0.1)' }
               }
             }
           }
@@ -826,22 +813,16 @@
     }
 
     function selectStatus(element) {
-      // Remove selected class from siblings
       const siblings = element.parentNode.querySelectorAll('.status-option');
       siblings.forEach(sibling => sibling.classList.remove('selected'));
-      
-      // Add selected class to clicked element
       element.classList.add('selected');
     }
 
     function validateInputs() {
       let isValid = true;
-      
-      // Clear previous errors
       document.querySelectorAll('.info-input').forEach(input => input.classList.remove('validation-error'));
       document.querySelectorAll('.error-message').forEach(error => error.textContent = '');
       
-      // Check required fields
       const requiredFields = [
         { id: 'company-name', name: 'Firmenname' },
         { id: 'contact-name', name: 'Ihr Name' },
@@ -857,7 +838,6 @@
         }
       });
       
-      // Check email format
       const emailInput = document.getElementById('contact-email');
       if (emailInput.value && !emailInput.value.includes('@')) {
         emailInput.classList.add('validation-error');
@@ -912,18 +892,12 @@
         return;
       }
       
-      // Calculate readiness score
       const percentage = calculateReadinessScore(responses);
-      
-      // Get products for cost calculation
       const products = getAllProducts();
       
-      // Generate results
       const resultsContent = generateResultsContent(percentage, responses, products);
       document.getElementById('results-content').innerHTML = resultsContent;
       document.getElementById('results').style.display = 'block';
-      
-      // Scroll to results first
       document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -949,7 +923,6 @@
         </div>
       `;
       
-      // Priority actions based on compliance gaps
       const needActions = responses.filter(r => r.status === 'need');
       const partialActions = responses.filter(r => r.status === 'partial');
       
@@ -979,7 +952,6 @@
           </div>`;
       }
       
-      // Cost summary if products are defined
       if (products.length > 0) {
         const totalTonnage = products.reduce((sum, p) => sum + p.tonnage, 0);
         const costs = {};
@@ -1000,13 +972,12 @@
               📈 Kostensteigerung 2026-2034: +${Math.round(((costs[2034] - costs[2026]) / costs[2026]) * 100)}%
             </p>
             <div style="background:rgba(255,193,7,0.2); padding:10px; border-radius:5px; margin-top:10px;">
-              <small><strong>Hinweis:</strong> Berechnungen berücksichtigen EU-Benchmarks und CBAM Phase-in. Für CN-Codes mit Benchmarks werden diese abgezogen. Für genauere Kalkulationen mit Ihren realen Lieferantendaten kontaktieren Sie Entrenovu.</small>
+              <small><strong>Hinweis:</strong> Indirekte Emissionen stammen überwiegend aus Strom – sie sind land-/anlagenspezifisch. Nutzen Sie die Umschaltung im Kalkulator, falls Sie nur direkte Emissionen berücksichtigen möchten.</small>
             </div>
           </div>
         `;
       }
       
-      // Next steps
       content += `
         <div class="action-item priority-low">
           <h4>▶ Empfohlene nächste Schritte</h4>
@@ -1033,13 +1004,11 @@
       submitBtn.disabled = true;
       submitBtn.textContent = '⏳ Wird gesendet...';
       
-      // Collect all data
       const responses = collectComplianceResponses();
       const score = calculateReadinessScore(responses);
       const products = getAllProducts();
       const totalImportVolume = products.reduce((sum, p) => sum + p.tonnage, 0);
       
-      // Calculate costs with new formula
       const costs2026 = products.reduce((sum, product) => {
         return sum + calculateCBAMCost(product.tonnage, product.emissions, product.benchmark, ralepaPrices[2026], 2026);
       }, 0);
@@ -1066,16 +1035,12 @@
       
       console.log('Zu sendende Daten:', companyData);
       
-      // Your Google Apps Script URL
       const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-VhRv-7oPC2b3HImELFmd_nYY6IZ6Eo8H3IWfpmIf88Z6CAY6RkFF9uZL5fBt7qkMlg/exec';
 
-      // Make the request to Google Apps Script
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(companyData)
       })
       .then(() => {
@@ -1104,6 +1069,312 @@
         }, 3000);
       });
     }
+
+    // ============================================
+    // NEW: Advanced CN dataset + benchmark logic
+    // ============================================
+    const CONFIG = {
+      includeIndirect: true,          // toggled by the new checkbox
+      preferSupplierEmissions: true,  // keep total if provided; we still recompute for direct-only
+      defaultOverseasCarbonPrice: 0
+    };
+
+    // Mirror the existing price & phase-in curves
+    let PRICE_CURVE = { ...ralepaPrices };
+    let PHASE_IN    = { ...cbamPhaseIn };
+
+    function setPriceCurve(obj){ PRICE_CURVE = {...PRICE_CURVE, ...obj}; }
+    function setPhaseIn(obj){ PHASE_IN = {...PHASE_IN, ...obj}; }
+    function setConfig(obj){ Object.assign(CONFIG, obj || {}); }
+
+    function normalizeCN(code){ return (code||'').toString().replace(/\s+/g,' ').trim(); }
+    function toNum(x){ const n = Number(x); return Number.isFinite(n) ? n : null; }
+
+    // ETS Benchmarks registry
+    const ETS_BENCHMARKS = {
+      clinker_grey:        { name: "Grey cement clinker", value: 0.693, unit: "tCO2/t" },
+      clinker_white:       { name: "White cement clinker", value: 0.957, unit: "tCO2/t" },
+      hot_metal:           { name: "Hot metal (pig iron)", value: 1.288, unit: "tCO2/t" },
+      eaf_carbon_steel:    { name: "Electric Arc Furnace carbon steel", value: 0.215, unit: "tCO2/t crude steel" },
+      eaf_high_alloy_steel:{ name: "Electric Arc Furnace high alloy steel", value: 0.268, unit: "tCO2/t crude steel" },
+      primary_aluminium:   { name: "Primary aluminium", value: 1.464, unit: "tCO2/t aluminium" },
+      ammonia:             { name: "Ammonia (NH3)", value: 1.570, unit: "tCO2/t" },
+      nitric_acid:         { name: "Nitric acid (HNO3)", value: 0.230, unit: "tCO2e/t" }
+    };
+
+    // Your full CN dataset (shortened here would break lookups; keep as provided earlier)
+    const CBAM_DATA_ROWS = [
+      // --- Iron & steel ---
+      { cn_code:"2601 12 00", description:"Agglomerated iron ores & concentrates (sintered ore)", sector:"Iron & steel", aggregated_category:"Sintered ore", default_direct_tCO2e_per_t:0.31, default_indirect_tCO2e_per_t:0.05, default_total_tCO2e_per_t:0.36, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"ETS sinter BM exists; left blank unless you want it applied." },
+      { cn_code:"7201", description:"Pig iron & spiegeleisen", sector:"Iron & steel", aggregated_category:"Pig iron", default_direct_tCO2e_per_t:1.90, default_indirect_tCO2e_per_t:0.17, default_total_tCO2e_per_t:2.07, ets_benchmark_key:"hot_metal", ets_benchmark_name:"Hot metal", benchmark_note:"" },
+      { cn_code:"7202 10", description:"Ferro-manganese", sector:"Iron & steel", aggregated_category:"Ferro-alloys", default_direct_tCO2e_per_t:1.44, default_indirect_tCO2e_per_t:2.08, default_total_tCO2e_per_t:3.51, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7202 40", description:"Ferro-chromium", sector:"Iron & steel", aggregated_category:"Ferro-alloys", default_direct_tCO2e_per_t:2.08, default_indirect_tCO2e_per_t:3.38, default_total_tCO2e_per_t:5.45, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7202 60", description:"Ferro-nickel", sector:"Iron & steel", aggregated_category:"Ferro-alloys", default_direct_tCO2e_per_t:3.49, default_indirect_tCO2e_per_t:2.81, default_total_tCO2e_per_t:6.26, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7203", description:"DRI & other spongy ferrous products", sector:"Iron & steel", aggregated_category:"DRI", default_direct_tCO2e_per_t:4.81, default_indirect_tCO2e_per_t:0.00, default_total_tCO2e_per_t:4.81, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7206 10 00", description:"Ingots (iron or non-alloy steel)", sector:"Iron & steel", aggregated_category:"Crude steel", default_direct_tCO2e_per_t:2.52, default_indirect_tCO2e_per_t:0.23, default_total_tCO2e_per_t:2.75, ets_benchmark_key:"eaf_carbon_steel", ets_benchmark_name:"Electric Arc Furnace carbon steel", benchmark_note:"BM applies to crude steel made in EAF." },
+      { cn_code:"7206 90 00", description:"Other primary forms (iron or non-alloy steel)", sector:"Iron & steel", aggregated_category:"Crude steel", default_direct_tCO2e_per_t:1.97, default_indirect_tCO2e_per_t:0.23, default_total_tCO2e_per_t:2.20, ets_benchmark_key:"eaf_carbon_steel", ets_benchmark_name:"Electric Arc Furnace carbon steel", benchmark_note:"" },
+      { cn_code:"7207 19 19", description:"Semi-finished: forged", sector:"Iron & steel", aggregated_category:"Semi-finished steel", default_direct_tCO2e_per_t:2.65, default_indirect_tCO2e_per_t:0.62, default_total_tCO2e_per_t:3.27, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7207 19 80", description:"Semi-finished: other", sector:"Iron & steel", aggregated_category:"Semi-finished steel", default_direct_tCO2e_per_t:1.89, default_indirect_tCO2e_per_t:0.32, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7207 20 80", description:"Semi-finished: other", sector:"Iron & steel", aggregated_category:"Semi-finished steel", default_direct_tCO2e_per_t:1.89, default_indirect_tCO2e_per_t:0.32, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7208", description:"Flat non-alloy ≥600mm hot-rolled", sector:"Iron & steel", aggregated_category:"Flat non-alloy ≥600 hot-rolled", default_direct_tCO2e_per_t:2.01, default_indirect_tCO2e_per_t:0.27, default_total_tCO2e_per_t:2.28, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7209", description:"Flat non-alloy ≥600mm cold-rolled", sector:"Iron & steel", aggregated_category:"Flat non-alloy ≥600 cold-rolled", default_direct_tCO2e_per_t:2.03, default_indirect_tCO2e_per_t:0.36, default_total_tCO2e_per_t:2.39, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7210", description:"Flat non-alloy ≥600mm coated", sector:"Iron & steel", aggregated_category:"Flat non-alloy ≥600 coated", default_direct_tCO2e_per_t:1.97, default_indirect_tCO2e_per_t:0.39, default_total_tCO2e_per_t:2.35, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7211 13 00", description:"Flat non-alloy <600mm ≥4mm not in coils", sector:"Iron & steel", aggregated_category:"Flat non-alloy <600 specific", default_direct_tCO2e_per_t:2.01, default_indirect_tCO2e_per_t:0.27, default_total_tCO2e_per_t:2.28, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7211 23", description:"Flat non-alloy <600mm <0.25% C", sector:"Iron & steel", aggregated_category:"Flat non-alloy <600", default_direct_tCO2e_per_t:2.03, default_indirect_tCO2e_per_t:0.36, default_total_tCO2e_per_t:2.39, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7212", description:"Flat non-alloy <600mm coated", sector:"Iron & steel", aggregated_category:"Flat non-alloy <600 coated", default_direct_tCO2e_per_t:1.97, default_indirect_tCO2e_per_t:0.39, default_total_tCO2e_per_t:2.35, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7213", description:"Bars & rods, hot-rolled, in coils (non-alloy)", sector:"Iron & steel", aggregated_category:"Bars/rods non-alloy coils", default_direct_tCO2e_per_t:1.89, default_indirect_tCO2e_per_t:0.32, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7214 10 00", description:"Bars & rods non-alloy forged", sector:"Iron & steel", aggregated_category:"Bars/rods non-alloy forged", default_direct_tCO2e_per_t:2.65, default_indirect_tCO2e_per_t:0.62, default_total_tCO2e_per_t:3.27, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7214 20 00", description:"Bars & rods non-alloy deformed", sector:"Iron & steel", aggregated_category:"Bars/rods non-alloy deformed", default_direct_tCO2e_per_t:1.89, default_indirect_tCO2e_per_t:0.32, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7215", description:"Other bars & rods non-alloy", sector:"Iron & steel", aggregated_category:"Other bars/rods non-alloy", default_direct_tCO2e_per_t:1.89, default_indirect_tCO2e_per_t:0.32, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7216", description:"Angles/shapes/sections non-alloy", sector:"Iron & steel", aggregated_category:"Angles/shapes non-alloy", default_direct_tCO2e_per_t:1.89, default_indirect_tCO2e_per_t:0.32, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7217 10", description:"Wire non-alloy (not plated or coated)", sector:"Iron & steel", aggregated_category:"Wire non-alloy", default_direct_tCO2e_per_t:1.88, default_indirect_tCO2e_per_t:0.49, default_total_tCO2e_per_t:2.37, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7217 30", description:"Wire non-alloy (plated/coated base metals)", sector:"Iron & steel", aggregated_category:"Wire non-alloy", default_direct_tCO2e_per_t:1.95, default_indirect_tCO2e_per_t:0.51, default_total_tCO2e_per_t:2.46, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7219 11 00", description:"Stainless flat ≥600mm >10mm", sector:"Iron & steel", aggregated_category:"Stainless flat ≥600", default_direct_tCO2e_per_t:2.18, default_indirect_tCO2e_per_t:1.90, default_total_tCO2e_per_t:4.08, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7219 31 00", description:"Stainless flat <600mm ≥4.75mm", sector:"Iron & steel", aggregated_category:"Stainless flat <600", default_direct_tCO2e_per_t:2.21, default_indirect_tCO2e_per_t:1.99, default_total_tCO2e_per_t:4.19, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7220 11 00", description:"Stainless flat <600mm ≥4.75mm", sector:"Iron & steel", aggregated_category:"Stainless flat <600", default_direct_tCO2e_per_t:2.18, default_indirect_tCO2e_per_t:1.90, default_total_tCO2e_per_t:4.08, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7220 12 00", description:"Stainless flat <600mm <4.75mm", sector:"Iron & steel", aggregated_category:"Stainless flat <600", default_direct_tCO2e_per_t:2.18, default_indirect_tCO2e_per_t:1.90, default_total_tCO2e_per_t:4.08, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7220 20", description:"Stainless flat <600mm cold-reduced", sector:"Iron & steel", aggregated_category:"Stainless flat <600 cold-reduced", default_direct_tCO2e_per_t:2.21, default_indirect_tCO2e_per_t:1.99, default_total_tCO2e_per_t:4.19, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7221", description:"Bars & rods, hot-rolled, in coils (stainless)", sector:"Iron & steel", aggregated_category:"Stainless bars/rods coils", default_direct_tCO2e_per_t:2.14, default_indirect_tCO2e_per_t:2.17, default_total_tCO2e_per_t:4.30, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7222 20", description:"Bars & rods, cold-finished (stainless)", sector:"Iron & steel", aggregated_category:"Stainless bars/rods cold-finished", default_direct_tCO2e_per_t:2.14, default_indirect_tCO2e_per_t:2.17, default_total_tCO2e_per_t:4.30, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7222 30", description:"Other bars & rods (stainless)", sector:"Iron & steel", aggregated_category:"Stainless bars/rods", default_direct_tCO2e_per_t:2.51, default_indirect_tCO2e_per_t:2.10, default_total_tCO2e_per_t:4.61, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7223 00", description:"Wire of stainless steel", sector:"Iron & steel", aggregated_category:"Stainless wire", default_direct_tCO2e_per_t:2.13, default_indirect_tCO2e_per_t:2.36, default_total_tCO2e_per_t:4.49, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7225 30", description:"Other-alloy flat ≥600mm hot-rolled (in coils)", sector:"Iron & steel", aggregated_category:"Other alloy flat ≥600 hot-rolled", default_direct_tCO2e_per_t:1.95, default_indirect_tCO2e_per_t:0.40, default_total_tCO2e_per_t:2.35, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7225 40", description:"Other-alloy flat ≥600mm hot-rolled (not in coils)", sector:"Iron & steel", aggregated_category:"Other alloy flat ≥600 hot-rolled", default_direct_tCO2e_per_t:1.95, default_indirect_tCO2e_per_t:0.40, default_total_tCO2e_per_t:2.35, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7225 50", description:"Other-alloy flat ≥600mm cold-rolled", sector:"Iron & steel", aggregated_category:"Other alloy flat ≥600 cold-rolled", default_direct_tCO2e_per_t:1.98, default_indirect_tCO2e_per_t:0.49, default_total_tCO2e_per_t:2.46, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7225 91 00", description:"Other-alloy flat ≥600mm electrolytically zinc-coated", sector:"Iron & steel", aggregated_category:"Other alloy flat ≥600 coated", default_direct_tCO2e_per_t:1.92, default_indirect_tCO2e_per_t:0.51, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7225 92 00", description:"Other-alloy flat ≥600mm otherwise zinc-coated", sector:"Iron & steel", aggregated_category:"Other alloy flat ≥600 coated", default_direct_tCO2e_per_t:1.92, default_indirect_tCO2e_per_t:0.51, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7225 99 00", description:"Other-alloy flat ≥600mm other", sector:"Iron & steel", aggregated_category:"Other alloy flat ≥600 other", default_direct_tCO2e_per_t:1.92, default_indirect_tCO2e_per_t:0.51, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7226 19 10", description:"Other-alloy flat <600mm hot-rolled", sector:"Iron & steel", aggregated_category:"Other alloy flat <600 hot-rolled", default_direct_tCO2e_per_t:1.95, default_indirect_tCO2e_per_t:0.40, default_total_tCO2e_per_t:2.35, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7226 20 00", description:"Other-alloy flat <600mm high-speed steel", sector:"Iron & steel", aggregated_category:"Other alloy flat <600", default_direct_tCO2e_per_t:1.95, default_indirect_tCO2e_per_t:0.40, default_total_tCO2e_per_t:2.35, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7226 92 00", description:"Other-alloy flat <600mm cold-rolled", sector:"Iron & steel", aggregated_category:"Other alloy flat <600 cold-rolled", default_direct_tCO2e_per_t:1.98, default_indirect_tCO2e_per_t:0.49, default_total_tCO2e_per_t:2.46, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7226 99", description:"Other-alloy flat <600mm other", sector:"Iron & steel", aggregated_category:"Other alloy flat <600", default_direct_tCO2e_per_t:1.92, default_indirect_tCO2e_per_t:0.51, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7227", description:"Bars & rods, hot-rolled, in coils (other-alloy)", sector:"Iron & steel", aggregated_category:"Other alloy bars/rods coils", default_direct_tCO2e_per_t:1.86, default_indirect_tCO2e_per_t:0.57, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7228 10 20", description:"Other-alloy bars/rods hot-rolled/drawn/extruded; clad", sector:"Iron & steel", aggregated_category:"Other alloy bars/rods", default_direct_tCO2e_per_t:1.86, default_indirect_tCO2e_per_t:0.57, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7228 10 90", description:"Other-alloy bars/rods hot-rolled/drawn/extruded; other", sector:"Iron & steel", aggregated_category:"Other alloy bars/rods", default_direct_tCO2e_per_t:1.86, default_indirect_tCO2e_per_t:0.57, default_total_tCO2e_per_t:2.43, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7228 40", description:"Other-alloy bars/rods forged", sector:"Iron & steel", aggregated_category:"Other alloy bars/rods forged", default_direct_tCO2e_per_t:2.41, default_indirect_tCO2e_per_t:0.79, default_total_tCO2e_per_t:3.20, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7228 50", description:"Other-alloy bars/rods cold-formed/finished", sector:"Iron & steel", aggregated_category:"Other alloy bars/rods cold-finished", default_direct_tCO2e_per_t:null, default_indirect_tCO2e_per_t:null, default_total_tCO2e_per_t:null, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7229", description:"Wire of other-alloy steel", sector:"Iron & steel", aggregated_category:"Wire other alloy steel", default_direct_tCO2e_per_t:1.84, default_indirect_tCO2e_per_t:0.75, default_total_tCO2e_per_t:2.59, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7301", description:"Sheet piling; welded angles/shapes/sections", sector:"Iron & steel", aggregated_category:"Sheet piling etc.", default_direct_tCO2e_per_t:2.03, default_indirect_tCO2e_per_t:0.36, default_total_tCO2e_per_t:2.39, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7302", description:"Railway/tramway track material (iron/steel)", sector:"Iron & steel", aggregated_category:"Rails and track material", default_direct_tCO2e_per_t:1.93, default_indirect_tCO2e_per_t:0.29, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7303 00", description:"Cast-iron tubes/pipes/hollow profiles", sector:"Iron & steel", aggregated_category:"Cast iron pipes", default_direct_tCO2e_per_t:2.21, default_indirect_tCO2e_per_t:0.35, default_total_tCO2e_per_t:2.56, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7304 41 00", description:"Seamless tubes/pipes cold-drawn/rolled (stainless)", sector:"Iron & steel", aggregated_category:"Seamless pipes (stainless)", default_direct_tCO2e_per_t:1.86, default_indirect_tCO2e_per_t:0.35, default_total_tCO2e_per_t:2.20, ets_benchmark_key:"eaf_high_alloy_steel", ets_benchmark_name:"EAF high alloy steel", benchmark_note:"" },
+      { cn_code:"7304 51", description:"Other seamless tubes/pipes cold-drawn/rolled (non-stainless)", sector:"Iron & steel", aggregated_category:"Seamless pipes", default_direct_tCO2e_per_t:1.93, default_indirect_tCO2e_per_t:0.29, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7305", description:"Other tubes/pipes (large diameter welded etc.)", sector:"Iron & steel", aggregated_category:"Other tubes & pipes", default_direct_tCO2e_per_t:2.03, default_indirect_tCO2e_per_t:0.36, default_total_tCO2e_per_t:2.39, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7306 30 12", description:"Other welded tubes/pipes cold-reduced", sector:"Iron & steel", aggregated_category:"Welded pipes cold-reduced", default_direct_tCO2e_per_t:2.03, default_indirect_tCO2e_per_t:0.36, default_total_tCO2e_per_t:2.39, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7306 30 18", description:"Other welded tubes/pipes other", sector:"Iron & steel", aggregated_category:"Welded pipes other", default_direct_tCO2e_per_t:2.01, default_indirect_tCO2e_per_t:0.27, default_total_tCO2e_per_t:2.28, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7306 40 80", description:"Other welded tubes/pipes circular other", sector:"Iron & steel", aggregated_category:"Other welded pipes", default_direct_tCO2e_per_t:1.95, default_indirect_tCO2e_per_t:0.33, default_total_tCO2e_per_t:2.28, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7306 50 21", description:"Other welded tubes/pipes cold-reduced", sector:"Iron & steel", aggregated_category:"Other welded pipes cold-reduced", default_direct_tCO2e_per_t:1.97, default_indirect_tCO2e_per_t:0.41, default_total_tCO2e_per_t:2.38, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7307 11", description:"Pipe fittings of non-malleable cast iron", sector:"Iron & steel", aggregated_category:"Pipe fittings (non-malleable cast iron)", default_direct_tCO2e_per_t:2.54, default_indirect_tCO2e_per_t:0.57, default_total_tCO2e_per_t:3.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7307 19 10", description:"Pipe fittings of cast iron", sector:"Iron & steel", aggregated_category:"Pipe fittings (cast iron)", default_direct_tCO2e_per_t:0.61, default_indirect_tCO2e_per_t:1.05, default_total_tCO2e_per_t:1.66, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7307 21 00", description:"Flanges", sector:"Iron & steel", aggregated_category:"Pipe fittings (flanges)", default_direct_tCO2e_per_t:1.87, default_indirect_tCO2e_per_t:0.43, default_total_tCO2e_per_t:2.30, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7307 92", description:"Threaded elbows/bends/sleeves", sector:"Iron & steel", aggregated_category:"Pipe fittings (threaded elbows etc.)", default_direct_tCO2e_per_t:1.93, default_indirect_tCO2e_per_t:0.29, default_total_tCO2e_per_t:2.21, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7308", description:"Structures & parts of structures (iron/steel)", sector:"Iron & steel", aggregated_category:"Structures", default_direct_tCO2e_per_t:2.46, default_indirect_tCO2e_per_t:2.55, default_total_tCO2e_per_t:5.01, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7309", description:"Reservoirs/tanks/vats >300 l (not fitted)", sector:"Iron & steel", aggregated_category:"Containers >300l", default_direct_tCO2e_per_t:2.46, default_indirect_tCO2e_per_t:2.55, default_total_tCO2e_per_t:5.01, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7310", description:"Containers ≤300 l (not fitted)", sector:"Iron & steel", aggregated_category:"Containers ≤300l", default_direct_tCO2e_per_t:2.46, default_indirect_tCO2e_per_t:2.55, default_total_tCO2e_per_t:5.01, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7311", description:"Containers for compressed or liquefied gas", sector:"Iron & steel", aggregated_category:"Gas containers", default_direct_tCO2e_per_t:2.46, default_indirect_tCO2e_per_t:2.55, default_total_tCO2e_per_t:5.01, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7318", description:"Screws/bolts/nuts/washers etc.", sector:"Iron & steel", aggregated_category:"Fasteners", default_direct_tCO2e_per_t:2.46, default_indirect_tCO2e_per_t:2.55, default_total_tCO2e_per_t:5.01, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7326", description:"Other articles of iron or steel", sector:"Iron & steel", aggregated_category:"Other articles", default_direct_tCO2e_per_t:2.46, default_indirect_tCO2e_per_t:2.55, default_total_tCO2e_per_t:5.01, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+
+      // --- Aluminium ---
+      { cn_code:"7601", description:"Unwrought aluminium", sector:"Aluminium", aggregated_category:"Unwrought aluminium", default_direct_tCO2e_per_t:2.36, default_indirect_tCO2e_per_t:8.14, default_total_tCO2e_per_t:10.49, ets_benchmark_key:"primary_aluminium", ets_benchmark_name:"Primary aluminium", benchmark_note:"" },
+      { cn_code:"7603", description:"Aluminium powders and flakes", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.48, default_indirect_tCO2e_per_t:8.40, default_total_tCO2e_per_t:10.88, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"No ETS product benchmark for powders/flakes." },
+      { cn_code:"7604 10 10", description:"Bars/rods of aluminium, not alloyed", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.31, default_indirect_tCO2e_per_t:7.49, default_total_tCO2e_per_t:9.80, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7604 10 90", description:"Profiles of aluminium, not alloyed", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.73, default_indirect_tCO2e_per_t:9.30, default_total_tCO2e_per_t:12.04, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7604 21 00", description:"Hollow profiles of aluminium alloys", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.73, default_indirect_tCO2e_per_t:9.30, default_total_tCO2e_per_t:12.04, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7604 29 10", description:"Bars/rods of aluminium alloys", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.31, default_indirect_tCO2e_per_t:7.49, default_total_tCO2e_per_t:9.80, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7604 29 90", description:"Profiles of aluminium alloys", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.73, default_indirect_tCO2e_per_t:9.30, default_total_tCO2e_per_t:12.04, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7605", description:"Aluminium wire", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.31, default_indirect_tCO2e_per_t:7.49, default_total_tCO2e_per_t:9.80, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7606", description:"Aluminium plates, sheets & strip (>0.2 mm)", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7607", description:"Aluminium foil (≤0.2 mm)", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7608", description:"Aluminium tubes and pipes", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.73, default_indirect_tCO2e_per_t:9.30, default_total_tCO2e_per_t:12.04, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7609 00 00", description:"Aluminium tube or pipe fittings", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.73, default_indirect_tCO2e_per_t:9.30, default_total_tCO2e_per_t:12.04, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7610", description:"Aluminium structures; prepared plates/rods/profiles", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.73, default_indirect_tCO2e_per_t:9.30, default_total_tCO2e_per_t:12.04, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7611 00 00", description:"Aluminium reservoirs/tanks/vats >300 l", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7612", description:"Aluminium casks/drums/cans/boxes ≤300 l", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7613 00 00", description:"Aluminium containers for compressed or liquefied gas", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7614", description:"Stranded wire/cables/plaited bands of aluminium", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.31, default_indirect_tCO2e_per_t:7.49, default_total_tCO2e_per_t:9.80, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7616 10 00", description:"Aluminium nails/screws/bolts/nuts/washers etc.", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7616 91 00", description:"Cloth/grill/netting/fencing of aluminium wire", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.31, default_indirect_tCO2e_per_t:7.49, default_total_tCO2e_per_t:9.80, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7616 99 10", description:"Other articles of aluminium – Cast", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.48, default_indirect_tCO2e_per_t:8.40, default_total_tCO2e_per_t:10.88, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+      { cn_code:"7616 99 90", description:"Other articles of aluminium – Other", sector:"Aluminium", aggregated_category:"Aluminium products", default_direct_tCO2e_per_t:2.86, default_indirect_tCO2e_per_t:9.25, default_total_tCO2e_per_t:12.11, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"" },
+
+      // --- Fertilisers ---
+      { cn_code:"2808 00 00", description:"Nitric acid; sulphonitric acids", sector:"Fertilisers", aggregated_category:"Nitric acid", default_direct_tCO2e_per_t:2.56, default_indirect_tCO2e_per_t:0.05, default_total_tCO2e_per_t:2.60, ets_benchmark_key:"nitric_acid", ets_benchmark_name:"Nitric acid", benchmark_note:"" },
+      { cn_code:"2814", description:"Ammonia", sector:"Fertilisers", aggregated_category:"Ammonia", default_direct_tCO2e_per_t:2.68, default_indirect_tCO2e_per_t:0.14, default_total_tCO2e_per_t:2.82, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"2834 21 00", description:"Nitrates of potassium", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:1.82, default_indirect_tCO2e_per_t:0.06, default_total_tCO2e_per_t:1.88, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"No ETS product benchmark for this good." },
+      { cn_code:"3102 10", description:"Urea", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:1.78, default_indirect_tCO2e_per_t:0.12, default_total_tCO2e_per_t:1.90, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"Ammonia BM relevant for N fertilisers." },
+      { cn_code:"3102 21 00", description:"Ammonium sulphate", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:0.86, default_indirect_tCO2e_per_t:0.09, default_total_tCO2e_per_t:0.94, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3102 29 00", description:"Double salts/mixtures of (NH4)2SO4 & NH4NO3", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:1.54, default_indirect_tCO2e_per_t:0.10, default_total_tCO2e_per_t:1.63, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3102 30", description:"Ammonium nitrate", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:2.32, default_indirect_tCO2e_per_t:0.07, default_total_tCO2e_per_t:2.39, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3102 40", description:"CAN (AN + CaCO3 etc.)", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:1.77, default_indirect_tCO2e_per_t:0.06, default_total_tCO2e_per_t:1.84, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3102 50 00", description:"Sodium nitrate", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:3.99, default_indirect_tCO2e_per_t:0.07, default_total_tCO2e_per_t:4.06, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"No ETS product benchmark." },
+      { cn_code:"3102 60 00", description:"Ca nitrate + AN (double salts/mixtures)", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:1.87, default_indirect_tCO2e_per_t:0.08, default_total_tCO2e_per_t:1.95, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3102 80 00", description:"UAN (urea-ammonium nitrate)", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:1.28, default_indirect_tCO2e_per_t:0.06, default_total_tCO2e_per_t:1.34, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3102 90 00", description:"Other nitrogen fertilisers", sector:"Fertilisers", aggregated_category:"Nitrogen fertilisers", default_direct_tCO2e_per_t:1.65, default_indirect_tCO2e_per_t:0.10, default_total_tCO2e_per_t:1.74, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 10 00", description:"Tablets or similar forms ≤10 kg", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:0.94, default_indirect_tCO2e_per_t:0.08, default_total_tCO2e_per_t:1.02, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 20", description:"NPK fertilisers", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:1.23, default_indirect_tCO2e_per_t:0.11, default_total_tCO2e_per_t:1.35, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 30 00", description:"DAP", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:0.69, default_indirect_tCO2e_per_t:0.06, default_total_tCO2e_per_t:0.75, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 40 00", description:"MAP (and mixes with DAP)", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:0.44, default_indirect_tCO2e_per_t:0.05, default_total_tCO2e_per_t:0.49, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 51 00", description:"Other N+P fertilisers", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:1.29, default_indirect_tCO2e_per_t:0.11, default_total_tCO2e_per_t:1.40, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 59 00", description:"Other N+P fertilisers (other)", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:1.29, default_indirect_tCO2e_per_t:0.11, default_total_tCO2e_per_t:1.40, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+      { cn_code:"3105 90", description:"Other (incl. blends)", sector:"Fertilisers", aggregated_category:"Mixed fertilisers", default_direct_tCO2e_per_t:0.94, default_indirect_tCO2e_per_t:0.08, default_total_tCO2e_per_t:1.02, ets_benchmark_key:"ammonia", ets_benchmark_name:"Ammonia", benchmark_note:"" },
+
+      // --- Cement ---
+      { cn_code:"2507 00 80", description:"Other kaolinic clays (calcined clay only; non-calcined=0)", sector:"Cement", aggregated_category:"Calcined clay", default_direct_tCO2e_per_t:0.23, default_indirect_tCO2e_per_t:0.08, default_total_tCO2e_per_t:0.32, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"No ETS product benchmark for calcined clay." },
+      { cn_code:"2523 10 00", description:"Cement clinkers (grey)", sector:"Cement", aggregated_category:"Cement clinker", default_direct_tCO2e_per_t:0.83, default_indirect_tCO2e_per_t:0.04, default_total_tCO2e_per_t:0.87, ets_benchmark_key:"clinker_grey", ets_benchmark_name:"Grey cement clinker", benchmark_note:"" },
+      { cn_code:"2523 21 00", description:"White Portland cement", sector:"Cement", aggregated_category:"Cement", default_direct_tCO2e_per_t:1.16, default_indirect_tCO2e_per_t:0.10, default_total_tCO2e_per_t:1.26, ets_benchmark_key:"clinker_white", ets_benchmark_name:"White cement clinker", benchmark_note:"ETS BM is for clinker; used as proxy for cement." },
+      { cn_code:"2523 29 00", description:"Other Portland cement", sector:"Cement", aggregated_category:"Cement", default_direct_tCO2e_per_t:0.81, default_indirect_tCO2e_per_t:0.06, default_total_tCO2e_per_t:0.87, ets_benchmark_key:"clinker_grey", ets_benchmark_name:"Grey cement clinker", benchmark_note:"ETS BM is for clinker; used as proxy for cement." },
+      { cn_code:"2523 90 00", description:"Other hydraulic cements", sector:"Cement", aggregated_category:"Cement", default_direct_tCO2e_per_t:0.59, default_indirect_tCO2e_per_t:0.04, default_total_tCO2e_per_t:0.63, ets_benchmark_key:"clinker_grey", ets_benchmark_name:"Grey cement clinker", benchmark_note:"ETS BM is for clinker; used as proxy for cement." },
+      { cn_code:"2523 30 00", description:"Aluminous cement", sector:"Cement", aggregated_category:"Aluminous cement", default_direct_tCO2e_per_t:1.75, default_indirect_tCO2e_per_t:0.15, default_total_tCO2e_per_t:1.90, ets_benchmark_key:"", ets_benchmark_name:"", benchmark_note:"No ETS product benchmark for aluminous cement." }
+    ];
+
+    const CNRegistry = new Map();
+
+    function loadCBAMDataset(rows = []){
+      CNRegistry.clear();
+      rows.forEach(r => {
+        const key = normalizeCN(r.cn);
+        if(!key) return;
+
+        const direct = toNum(r.direct);
+        const indirect = toNum(r.indirect);
+        const providedTotal = toNum(r.total);
+
+        const totalEmbedded = (providedTotal != null)
+          ? providedTotal
+          : ((direct ?? 0) + (indirect ?? 0));
+
+        CNRegistry.set(key, {
+          cn: key,
+          sector: r.sector || '',
+          product: r.product || '',
+          aggregated_category: r.aggregated_category || '',
+          direct: direct ?? 0,
+          indirect: indirect ?? 0,
+          total: totalEmbedded,
+          benchmark: toNum(r.benchmark) ?? 0,
+          benchmark_name: r.benchmark_name || '',
+          notes: r.notes || ''
+        });
+      });
+      console.log(`Loaded ${CNRegistry.size} CN records`);
+    }
+
+    function transformRows(rows){
+      const out = [];
+      for(const r of rows){
+        const bmKey = (r.ets_benchmark_key || '').trim();
+        const bm = bmKey ? ETS_BENCHMARKS[bmKey] : null;
+
+        const direct = toNum(r.default_direct_tCO2e_per_t);
+        const indirect = toNum(r.default_indirect_tCO2e_per_t);
+        const total = toNum(r.default_total_tCO2e_per_t);
+
+        if (direct==null && indirect==null && total==null) continue;
+
+        out.push({
+          cn: r.cn_code,
+          sector: r.sector,
+          product: r.description || r.aggregated_category,
+          aggregated_category: r.aggregated_category,
+          direct,
+          indirect,
+          total,
+          benchmark: bm ? bm.value : null,
+          benchmark_name: bm ? bm.name : (r.ets_benchmark_name || ''),
+          notes: r.benchmark_note || ''
+        });
+      }
+      return out;
+    }
+
+    function cbamCostCore({ tonnage, emissions, benchmark = 0 }, year){
+      const P = Number(PRICE_CURVE[year] ?? 0);
+      const phi = Number(PHASE_IN[year] ?? 1);
+      const e = Math.max(0, Number(emissions ?? 0));
+      const b = Math.max(0, Number(benchmark ?? 0));
+      const adj = Math.max(0, e - (b * phi));
+      return tonnage * adj * P;
+    }
+
+    // Override cost fn to use internal price curve (keeps signature for compatibility)
+    function calculateCBAMCost(tonnage, emissions, benchmark, _ignoredPrice, year){
+      return cbamCostCore({ tonnage, emissions, benchmark }, year);
+    }
+
+    // Override CN lookup to honor the includeIndirect toggle and use CNRegistry first
+    function updateFromCNCode(id) {
+      const cnCode = normalizeCN(document.getElementById(`cncode-${id}`).value);
+      const categorySelect = document.getElementById(`category-${id}`);
+      const emissionsInput = document.getElementById(`emissions-${id}`);
+      const benchmarkInput = document.getElementById(`benchmark-${id}`);
+      const productInfo = document.getElementById(`product-info-${id}`);
+      const productDetails = document.getElementById(`product-details-${id}`);
+
+      const data = CNRegistry.get(cnCode) || (cnCode ? cnCodeDatabase[cnCode] : null);
+
+      if (cnCode && data) {
+        const categoryMapping = {
+          'Cement': 'cement',
+          'Fertilisers': 'fertilizer',
+          'Aluminium': 'aluminium',
+          'Hydrogen': 'custom',
+          'Iron & steel': 'steel'
+        };
+        const sectorName = data.sector || '';
+        categorySelect.value = categoryMapping[sectorName] || 'custom';
+
+        const dir = Number(data.direct ?? 0);
+        const ind = Number(data.indirect ?? 0);
+        const total = Number(data.total ?? (dir + ind));
+        const effectiveTotal = CONFIG.includeIndirect ? (total || (dir + ind)) : dir;
+
+        emissionsInput.value = Number.isFinite(effectiveTotal) ? effectiveTotal : '';
+        const bm = Number(data.benchmark ?? 0);
+        benchmarkInput.value = bm || 0;
+
+        const bmName = data.benchmark_name || (bm ? 'ETS product benchmark' : '–');
+
+        productDetails.innerHTML = `
+          <strong>${data.product || 'Produkt'}</strong> – Sektor: ${sectorName || '-'}<br>
+          Direkt: ${isFinite(dir)?dir.toFixed(2):'-'} tCO₂/t | Indirekt: ${isFinite(ind)?ind.toFixed(2):'-'} tCO₂/t | 
+          ${CONFIG.includeIndirect ? 'Summe:' : 'Verwendet:'} ${isFinite(effectiveTotal)?effectiveTotal.toFixed(2):'-'} tCO₂/t<br>
+          Benchmark: ${bm ? bm.toFixed(3)+' tCO₂/t' : '–'} ${bm ? '('+bmName+')' : ''}
+          ${data.notes ? `<br><em>${data.notes}</em>` : ''}
+        `;
+        productInfo.style.display = 'block';
+      } else if (cnCode) {
+        productDetails.textContent = `CN-Code "${cnCode}" nicht gefunden. Bitte Kategorie manuell auswählen.`;
+        productInfo.style.display = 'block';
+        emissionsInput.value = '';
+        benchmarkInput.value = 0;
+      } else {
+        productInfo.style.display = 'none';
+        emissionsInput.value = '';
+        benchmarkInput.value = 0;
+      }
+      updateProductCostPreview(id);
+      updateCostSummary();
+    }
+
+    // Toggle handler for includeIndirect
+    function toggleIncludeIndirect(checked){
+      setConfig({ includeIndirect: checked });
+      // Recompute emissions for CN-code products
+      document.querySelectorAll('.product-item').forEach(item => {
+        const id = item.id.split('-')[1];
+        const cn = document.getElementById(`cncode-${id}`).value.trim();
+        if (cn) updateFromCNCode(id); else updateProductCostPreview(id);
+      });
+      updateCostSummary();
+    }
+
+    (function bootstrapCBAM(){
+      const rows = transformRows(CBAM_DATA_ROWS);
+      loadCBAMDataset(rows);
+      setConfig({ includeIndirect: true });
+      console.log('CBAM dataset + benchmark engine initialisiert.');
+    })();
 
     // Initialize with one product on load
     window.addEventListener('load', function() {
