@@ -140,9 +140,13 @@
           </div>
         </div>
         <div class="indirect-info">
-          <strong>Indirekte Emissionen (Scope 2)</strong>
-          <p style="margin-top:6px;">Entstehen durch Stromverbrauch bei der Herstellung. Abhängig vom Strommix des Herstellungslandes bzw. anlagenspezifischen Daten.</p>
-        </div>
+  <strong>Indirekte Emissionen (Scope 2) - CBAM 2025 Regelung</strong>
+  <p style="margin-top:6px;">
+    <strong>✅ Indirekte Emissionen eingeschlossen:</strong> Zement, Düngemittel<br/>
+    <strong>❌ Nur direkte Emissionen:</strong> Stahl, Aluminium, Wasserstoff<br/>
+    <em>Entspricht den EU-CBAM-Vorschriften ab 2025</em>
+  </p>
+</div>
 
         <div id="product-calculator">
           <div id="products-container"></div>
@@ -515,7 +519,14 @@
     };
 
     const productCategories = { steel:'Stahl & Eisen', aluminium:'Aluminium', cement:'Zement', fertilizer:'Düngemittel', custom:'Andere' };
-    const cbamDefaultValues = { steel:2.80, aluminium:11.50, cement:0.97, fertilizer:1.72, custom:2.00 };
+    // Updated for 2025 CBAM regulations
+    const cbamDefaultValues = { 
+    steel: 2.01,        // Direct only - average from CN database
+    aluminium: 2.48,    // Direct only - updated from 11.50
+    cement: 0.87,       // Total (direct + indirect) - cement includes indirect
+    fertilizer: 1.90,   // Total (direct + indirect) - fertilizers include indirect  
+    custom: 2.00        // Direct only
+};;
 
     // Store questions for submission
     const questions = [
@@ -636,17 +647,24 @@
 
         directInput.value = (data.direct ?? 0);
         indirectInput.value = (data.indirect ?? 0);
-        // Use total emissions (direct + indirect) for sectors that include indirect emissions
-const useIndirect = data.sector === 'Cement' || data.sector === 'Fertilisers';
-const effectiveEmissions = useIndirect ? (data.total ?? data.direct ?? 0) : (data.direct ?? 0);
-emissionsInput.value = effectiveEmissions.toFixed(2);;
+
+        // 2025 CBAM: Only cement and fertilizers include indirect emissions
+        const sectorsWithIndirect = ['Cement', 'Fertilisers'];
+        const useIndirect = sectorsWithIndirect.includes(data.sector);
+        const effectiveEmissions = useIndirect ? (data.total ?? 0) : (data.direct ?? 0);
+        emissionsInput.value = effectiveEmissions.toFixed(2);
 
         benchmarkInput.value = data.benchmark ? Number(data.benchmark).toFixed(3) : 0;
 
-        details.innerHTML = `<strong>${data.product}</strong> — Sektor: ${data.sector}<br>
-          Direkte Emissionen: ${(data.direct ?? 0).toFixed(2)} tCO₂/t | Indirekte: ${(data.indirect ?? 0).toFixed(2)} tCO₂/t |
-          Benchmark: ${data.benchmark ? data.benchmark.toFixed(3)+' tCO₂/t' : '—'}`;
-        infoBox.style.display = 'block';
+        const sectorsWithIndirect = ['Cement', 'Fertilisers'];
+const useIndirect = sectorsWithIndirect.includes(data.sector);
+const emissionDisplay = useIndirect ? 
+  `Gesamt (direkt + indirekt): ${(data.total ?? 0).toFixed(2)} tCO₂/t` :
+  `Direkte Emissionen: ${(data.direct ?? 0).toFixed(2)} tCO₂/t (indirekte nicht eingeschlossen)`;
+
+details.innerHTML = `<strong>${data.product}</strong> — Sektor: ${data.sector}<br>
+  ${emissionDisplay}<br>
+  Benchmark: ${data.benchmark ? data.benchmark.toFixed(3)+' tCO₂/t' : '—'}`;
       } else if (cnRaw.trim()) {
         details.innerHTML = `CN-Code "${cnRaw}" nicht in der Datenbank gefunden. Bitte Kategorie manuell auswählen.`;
         infoBox.style.display = 'block';
@@ -674,10 +692,14 @@ emissionsInput.value = effectiveEmissions.toFixed(2);;
       if (cncode && findCN(cncode)) return;
 
       if (category && cbamDefaultValues[category]) {
-        emissionsInput.value = cbamDefaultValues[category].toFixed(2);
-        directInput.value = cbamDefaultValues[category];
-        indirectInput.value = 0;
-        benchmarkInput.value = 0;
+      // 2025 CBAM: Only cement and fertilizer include indirect emissions
+      const sectorsWithIndirect = ['cement', 'fertilizer'];
+      const useIndirect = sectorsWithIndirect.includes(category);
+  
+      emissionsInput.value = cbamDefaultValues[category].toFixed(2);
+      directInput.value = useIndirect ? cbamDefaultValues[category] * 0.85 : cbamDefaultValues[category]; // Estimate direct portion
+      indirectInput.value = useIndirect ? cbamDefaultValues[category] * 0.15 : 0; // Estimate indirect portion
+      benchmarkInput.value = 0;
       }
     }
 
