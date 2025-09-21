@@ -636,7 +636,10 @@
 
         directInput.value = (data.direct ?? 0);
         indirectInput.value = (data.indirect ?? 0);
-        emissionsInput.value = (data.direct ?? 0).toFixed(2);
+        // Use total emissions (direct + indirect) for sectors that include indirect emissions
+const useIndirect = data.sector === 'Cement' || data.sector === 'Fertilisers';
+const effectiveEmissions = useIndirect ? (data.total ?? data.direct ?? 0) : (data.direct ?? 0);
+emissionsInput.value = effectiveEmissions.toFixed(2);;
 
         benchmarkInput.value = data.benchmark ? Number(data.benchmark).toFixed(3) : 0;
 
