@@ -672,14 +672,11 @@
 
     function submitGapAnalysisData(data) {
       // Google Sheets submission for gap analysis
-      // In a production environment, this would call your Google Apps Script web app
       const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwravi5VP3KpGZg-abdEfySlO7nem94xQ41cVGjMPQjjVVIGXLOmMWOUWifW_H6vUQBjA/exec';
       
-      // For demonstration, we'll log the data that would be sent
       console.log('Gap analysis data to submit:', data);
       
-      // Actual submission code (uncomment and configure with your script URL):
-      /*
+      // Submit to Google Sheets
       fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -690,7 +687,6 @@
       }).catch(error => {
         console.error('Error submitting to Google Sheets:', error);
       });
-      */
     }
 
     function updateProductCostPreview(id) {
@@ -869,6 +865,83 @@
       
       document.getElementById('results').style.display = 'block';
       document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }   
+    
+    function calculateCBAMCosts() {
+      if (!validateCompanyInfo()) {
+        alert('Bitte füllen Sie alle Pflichtfelder aus.');
+        return;
+      }
+    
+      const products = [];
+      for (let i = 1; i <= productCounter; i++) {
+        const tonnageEl = document.getElementById(`tonnage-${i}`);
+        const emissionsEl = document.getElementById(`emissions-${i}`);
+        const benchmarkEl = document.getElementById(`benchmark-${i}`);
+        const categoryEl = document.getElementById(`category-${i}`);
+        const cncodeEl = document.getElementById(`cncode-${i}`);
+        
+        if (tonnageEl && emissionsEl && benchmarkEl) {
+          const tonnage = parseFloat(tonnageEl.value || '0');
+          const emissions = parseFloat(emissionsEl.value || '0');
+          const benchmark = parseFloat(benchmarkEl.value || '0');
+          const category = categoryEl ? categoryEl.value : '';
+          const cncode = cncodeEl ? cncodeEl.value : '';
+          
+          if (tonnage > 0 && emissions > 0) {
+            products.push({ 
+              id: i, 
+              tonnage, 
+              emissions, 
+              benchmark,
+              category: category || 'Nicht angegeben',
+              cncode: cncode || 'Nicht angegeben'
+            });
+          }
+        }
+      }
+    
+      if (products.length === 0) {
+        alert('Bitte fügen Sie mindestens ein Produkt mit Tonnage und Emissionswerten hinzu.');
+        return;
+      }
+    
+      // Calculate costs
+      let totalCosts = {};
+      let totalTonnage = 0;
+      
+      for (const year of Object.keys(co2Prices)) {
+        totalCosts[year] = 0;
+      }
+    
+      products.forEach(p => {
+        totalTonnage += p.tonnage;
+        const effectiveEmissions = Math.max(0, p.emissions - p.benchmark);
+        
+        for (const year of Object.keys(co2Prices)) {
+          const yearInt = parseInt(year);
+          totalCosts[year] += p.tonnage * effectiveEmissions * co2Prices[yearInt] * cbamPhaseIn[yearInt];
+        }
+      });
+    
+      // Display results
+      displayCostResults(totalCosts, totalTonnage);
+    
+      // Submit to Google Sheets
+      submitCalculatorData({
+        company: document.getElementById('company-name').value,
+        contact: document.getElementById('contact-name').value,
+        email: document.getElementById('contact-email').value,
+        suppliers: document.getElementById('eu-buyers').value,
+        size: document.getElementById('company-size').value,
+        products: products,
+        totalTonnage: totalTonnage,
+        cost2026: totalCosts[2026],
+        cost2030: totalCosts[2030],
+        cumulativeCosts: Object.values(totalCosts).slice(0, 5).reduce((a,b) => a+b, 0),
+        timestamp: new Date().toISOString(),
+        type: 'cost_calculator'
+      });
     }
 
     function calculateResults() {
