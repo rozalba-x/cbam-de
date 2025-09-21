@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CBAM Gap-Analyse Template</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter', sans-serif; line-height:1.6; background:white; min-height:100vh; color:#000; }
+    body { font-family:'Poppins', sans-serif; line-height:1.6; background:white; min-height:100vh; color:#000; }
     .container { max-width:1400px; margin:0 auto; padding:20px; }
     .header { background:white; border-radius:15px; padding:30px; text-align:center; margin-bottom:30px; box-shadow:0 10px 30px rgba(6,4,150,0.1); border:2px solid #060496; }
     .header h1 { color:#060496; font-size:2.5em; margin-bottom:10px; font-weight:700; }
@@ -47,10 +47,12 @@
     #projectionChart{ width:100%!important; height:100%!important; }
 
     /* Indirect emissions UI */
-    .indirect-toggle { background:#e8f0fe; border:2px solid #060496; padding:12px 14px; border-radius:10px; margin:10px 0 15px; display:flex; gap:12px; align-items:flex-start; }
+    .indirect-toggle { background:#e8f0fe; border:2px solid #060496; padding:12px 14px; border-radius:10px; margin:10px 0 15px; display:flex; gap:12px; align-items:flex-start; opacity:0.5; pointer-events:none; }
     .indirect-info { background:#fff3cd; border:2px solid #856404; color:#333; padding:12px 14px; border-radius:10px; margin:10px 0 20px; }
     .muted { color:#666; font-size:0.9em; }
-    .disclaimer { background:#f8f9fa; border:1px solid #ddd; padding:15px; border-radius:8px; margin:15px 0; color:#666; font-size:0.9em; }
+    
+    .product-item { background:white; border:2px solid #060496; border-radius:8px; padding:15px; margin:10px 0; }
+    .cost-calculator-section { background:#f8f9fa; padding:25px; border-radius:15px; margin:20px 0; border:2px solid #060496; }
 
     @media (max-width:700px){
       .status-grid{ grid-template-columns:1fr; }
@@ -65,7 +67,7 @@
     <div class="header">
       <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px;">
         <svg width="160" height="48" viewBox="0 0 320 96" style="flex-shrink:0;">
-          <text x="0" y="65" font-family="Inter, sans-serif" font-size="38" font-weight="400" fill="#060496">entrenovu.</text>
+          <text x="0" y="65" font-family="Poppins, sans-serif" font-size="38" font-weight="400" fill="#060496">entrenovu.</text>
         </svg>
         <div style="text-align:right;">
           <div style="font-size:12px; color:#666; margin-bottom:5px;">
@@ -81,188 +83,225 @@
       CBAM-Vollphase startet am 1. Januar 2026. Nutzen Sie diese Zeit zur systematischen Vorbereitung.
     </div>
 
-    <div class="financial-projection">
-      <h2 style="margin-bottom:20px; font-weight:500;">CBAM-Kostenprognose</h2>
-      <p style="font-weight:400;">Zu Informationszwecken: CO₂-Preisprognosen basierend auf konservativen Marktanalysen und <a href="https://www.sgs.com/en/services/eu-emissions-trading-system-ets-verification-services" target="_blank" style="color:#fff; text-decoration:underline;">verifizierten ETS-Marktdaten</a></p>
-      <div class="projection-grid">
-        <div class="projection-card">
-          <h4 style="font-weight:500;">Kostenfaktoren</h4>
-          <p style="font-weight:400;">Die tatsächlichen CBAM-Kosten variieren erheblich je nach:</p>
-          <ul style="line-height:1.6; font-weight:400;">
-            <li>Qualität der Lieferantendaten</li>
-            <li>Produktspezifische Emissionswerte</li>
-            <li>Anwendbare ETS-Benchmarks</li>
-            <li>Regulatorische Entwicklungen</li>
-          </ul>
-        </div>
-        <div class="projection-card">
-          <h4 style="font-weight:500;">Wettbewerbsvorteil durch Datenqualität</h4>
-          <p style="font-weight:400;">Importeure mit präzisen Lieferantendaten können deutlich niedrigere CBAM-Kosten realisieren als solche, die auf EU-Standardwerte angewiesen sind.</p>
-          <p style="margin-top:10px; font-weight:400;">Die Qualität der Emissionsdaten wird zunehmend zu einem entscheidenden Wettbewerbsfaktor in der EU-Importwirtschaft.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="austria-germany-info">
-      <h2>Regulatorische Anforderungen für deutsche und österreichische Importeure</h2>
-      <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin:15px 0;">
-        <h3>CBAM-Deklarant-Autorisierung</h3>
-        <p>Ab 1. Januar 2026 ist eine Autorisierung als CBAM-Deklarant erforderlich. Anträge können ab März 2025 bei den nationalen Behörden gestellt werden.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin:15px 0;">
-        <h3>Hauptverantwortlichkeiten</h3>
-        <p>Sammlung von Emissionsdaten der Lieferanten, Quartalsberichterstattung bis Ende 2025, Kauf und Abgabe von CBAM-Zertifikaten ab 2026, unabhängige Verifizierung der Berichte und jährliche Deklaration bis 31. Mai.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin:15px 0;">
-        <h3>Schwellenwerte und Sanktionen</h3>
-        <p>50-Tonnen-Regel: Importeure unter 50 t/Jahr sind von der Berichtspflicht befreit (ausgenommen Wasserstoff und Elektrizität). Sanktionen: 10-50€ pro Tonne in der Übergangsphase, ab 2026: 100€ pro fehlendes CBAM-Zertifikat.</p>
-      </div>
-    </div>
-
     <!-- CBAM Cost Calculator -->
-    <div class="cost-calculator-section" style="background:#f8f9fa; padding:25px; border-radius:15px; margin:20px 0; border:2px solid #060496;">
-      <h2 style="color:#060496; margin-bottom:20px; font-weight:700;">CBAM-Kostenschätzer</h2>
-
-      <div class="disclaimer">
-        <h4 style="margin-bottom:10px;">Haftungsausschluss</h4>
-        <p>Diese Kostenschätzungen basieren auf EU-Übergangsdaten und CN-Code spezifischen Emissionswerten. Die Berechnungen dienen nur der Orientierung und ersetzen keine fachliche Beratung. Kontaktieren Sie uns für eine Kostenschätzung Ihrer Importprodukte.</p>
-      </div>
-
-      <!-- Indirect emissions toggle -->
-      <div class="indirect-toggle">
-        <input type="checkbox" id="include-indirect" onchange="toggleIndirect()" />
-        <div>
-          <strong>Indirekte Emissionen berücksichtigen</strong><br/>
-          <span class="muted">Standard: deaktiviert. Aktivieren nur bei verfügbaren Stromdaten.</span>
+    <div class="cost-calculator-section">
+      <h2 style="color:#060496; margin-bottom:20px; font-weight:600;">CBAM-Kostenschätzer</h2>
+      <p style="color:#666; margin-bottom:25px; font-weight:400;">Erhalten Sie eine erste Orientierung über potenzielle CBAM-Kosten. Füllen Sie das Formular aus und klicken Sie auf "Kosten berechnen".</p>
+      
+      <!-- Company info - REQUIRED FOR CALCULATIONS -->
+      <div class="company-info" style="margin-bottom:25px;">
+        <h3 style="margin-bottom:15px; color:#000; font-weight:500;">Schritt 1: Unternehmensdaten</h3>
+        <div class="info-row">
+          <div class="info-label">Firmenname: <span class="required">*</span></div>
+          <div>
+            <input type="text" class="info-input" id="company-name" placeholder="z.B. Austrian Steel Import GmbH" required>
+            <div class="error-message" id="company-name-error"></div>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Ihr Name: <span class="required">*</span></div>
+          <div>
+            <input type="text" class="info-input" id="contact-name" placeholder="z.B. Max Mustermann" required>
+            <div class="error-message" id="contact-name-error"></div>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">E-Mail: <span class="required">*</span></div>
+          <div>
+            <input type="email" class="info-input" id="contact-email" placeholder="z.B. max.mustermann@firma.at" required>
+            <div class="error-message" id="contact-email-error"></div>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Hauptlieferanten (Länder):</div>
+          <input type="text" class="info-input" id="eu-buyers" placeholder="z.B. Türkei, Ukraine, Serbien, China">
+        </div>
+        <div class="info-row">
+          <div class="info-label">Unternehmensgröße:</div>
+          <select class="info-input" id="company-size">
+            <option value="">Bitte wählen...</option>
+            <option value="small">Klein (&lt; 50 Mitarbeiter)</option>
+            <option value="medium">Mittel (50-250 Mitarbeiter)</option>
+            <option value="large">Groß (&gt; 250 Mitarbeiter)</option>
+          </select>
         </div>
       </div>
-      <div class="indirect-info">
-        <strong>Indirekte Emissionen (Scope 2)</strong>
-        <p style="margin-top:6px;">Entstehen durch Stromverbrauch bei der Herstellung. Abhängig vom Strommix des Herstellungslandes bzw. anlagenspezifischen Daten.</p>
+
+      <!-- Product Data Entry -->
+      <div style="background:white; border:2px solid #060496; border-radius:10px; padding:20px; margin-bottom:25px;">
+        <h3 style="margin-bottom:15px; color:#060496; font-weight:500;">Schritt 2: CBAM-Produkte</h3>
+        
+        <!-- Indirect emissions toggle - disabled/beta -->
+        <div class="indirect-toggle">
+          <input type="checkbox" id="include-indirect" disabled />
+          <div>
+            <strong>Indirekte Emissionen berücksichtigen <span style="background:#ff6b35; color:white; padding:2px 6px; border-radius:3px; font-size:0.8em; margin-left:8px;">BETA</span></strong><br/>
+            <span class="muted">Wird bald als Option verfügbar sein.</span>
+          </div>
+        </div>
+        <div class="indirect-info">
+          <strong>Indirekte Emissionen (Scope 2)</strong>
+          <p style="margin-top:6px;">Entstehen durch Stromverbrauch bei der Herstellung. Abhängig vom Strommix des Herstellungslandes bzw. anlagenspezifischen Daten.</p>
+        </div>
+
+        <div id="product-calculator">
+          <div id="products-container"></div>
+          <button type="button" onclick="addProduct()" style="background:#060496; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; margin:10px 0;">Produkt hinzufügen</button>
+        </div>
       </div>
 
-      <div id="product-calculator">
-        <h3 style="margin-bottom:15px;">CBAM-Produkte hinzufügen:</h3>
-        <div id="products-container"></div>
-        <button type="button" onclick="addProduct()" style="background:#060496; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; margin:10px 0;">Produkt hinzufügen</button>
+      <!-- Calculate Button -->
+      <div style="text-align:center; margin:25px 0;">
+        <button onclick="calculateCBAMCosts()" style="background:#060496; color:white; border:none; padding:15px 40px; border-radius:10px; font-size:1.2em; cursor:pointer; font-weight:600; font-family:'Poppins', sans-serif;">
+          CBAM-Kosten berechnen
+        </button>
+        <p style="color:#666; font-size:0.9em; margin-top:10px;">Ihre Daten werden zur Analyse gespeichert</p>
       </div>
 
-      <div id="cost-summary" style="display:none; background:#060496; color:white; padding:20px; border-radius:10px; margin-top:20px;">
-        <h3>Kostenschätzung</h3>
+      <!-- Results Section -->
+      <div id="cost-summary" style="display:none; background:#060496; color:white; padding:25px; border-radius:15px; margin-top:25px;">
+        <h3 style="margin-bottom:20px;">Ihre CBAM-Kostenschätzung</h3>
         <div id="total-costs-content"></div>
         <div class="chart-container" id="cost-chart-container" style="display:none; margin-top:20px;">
           <div class="chart-wrapper">
             <canvas id="costProjectionChart"></canvas>
           </div>
+          <div style="margin-top:15px; font-size:0.9em; text-align:center; color:#ddd;">
+            <p>Hinweis: Die Grafik zeigt prognostizierte CBAM-Kosten basierend auf konservativen Marktprognosen</p>
+          </div>
+        </div>
+        
+        <!-- Cost disclaimer and CTA -->
+        <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:8px; margin-top:20px;">
+          <p style="font-size:0.9em; margin-bottom:20px;"><strong>Kostenschätzung:</strong> Diese Kostenschätzungen basieren auf EU-Übergangsdaten und CN-Code spezifischen Emissionswerten. Es handelt sich um grobe Orientierungswerte - die tatsächlichen Kosten hängen von komplexen, unternehmens- und lieferantenspezifischen Faktoren ab.</p>
+          
+          <div style="text-align:center; padding:20px; background:#ffffff; border-radius:10px;">
+            <h4 style="color:#060496; margin-bottom:15px; font-weight:600;">Präzise CBAM-Analyse für Ihr Unternehmen</h4>
+            <p style="color:#333; margin-bottom:15px; font-weight:400;">Die Komplexität von CBAM erfordert spezialisierte Beratung für eine erfolgreiche und kostenoptimierte Implementierung.</p>
+            <a href="mailto:info@entrenovu.com?subject=CBAM-Beratungsanfrage&body=Sehr geehrte Damen und Herren,%0D%0A%0D%0AIch interessiere mich für eine professionelle CBAM-Beratung und Implementierungsbegleitung.%0D%0A%0D%0AMit freundlichen Grüßen" 
+               style="background:#060496; color:white; padding:12px 25px; border-radius:8px; text-decoration:none; font-weight:600; display:inline-block;">
+              Professionelle Beratung anfragen
+            </a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Company info -->
-    <div class="company-info">
-      <h3 style="margin-bottom:15px; color:#000;">Unternehmensdaten</h3>
-      <div class="info-row">
-        <div class="info-label">Firmenname: <span class="required">*</span></div>
-        <div>
-          <input type="text" class="info-input" id="company-name" placeholder="z.B. Austrian Steel Import GmbH" required>
-          <div class="error-message" id="company-name-error"></div>
+    <div style="background:linear-gradient(135deg, #060496 0%, #4338ca 100%); color:white; padding:30px; border-radius:20px; margin:25px 0; box-shadow:0 10px 30px rgba(6,4,150,0.2);">
+      <h2 style="margin-bottom:20px; font-weight:600; text-align:center;">CBAM-Kostenprognose</h2>
+      <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:15px; backdrop-filter:blur(10px);">
+        <div class="projection-grid">
+          <div class="projection-card" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2);">
+            <h4 style="font-weight:500; color:#ffffff;">Kostenfaktoren mit hoher Komplexität</h4>
+            <p style="font-weight:400; color:#f1f5f9;">Die tatsächlichen CBAM-Kosten sind deutlich komplexer als einfache Schätzungen und hängen von zahlreichen interdependenten Faktoren ab:</p>
+            <ul style="line-height:1.6; font-weight:400; color:#f1f5f9;">
+              <li>Qualität und Vollständigkeit der Lieferantendaten</li>
+              <li>Produktspezifische Emissionswerte und Verifizierungsanforderungen</li>
+              <li>Anwendbare ETS-Benchmarks und deren zeitliche Entwicklung</li>
+              <li>Regulatorische Entwicklungen und Auslegungsunsicherheiten</li>
+              <li>Lieferkettenspezifische Scope-2-Emissionen</li>
+              <li>Nationale Implementierungsunterschiede</li>
+            </ul>
+          </div>
+          <div class="projection-card" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2);">
+            <h4 style="font-weight:500; color:#ffffff;">Professionelle Begleitung notwendig</h4>
+            <p style="font-weight:400; color:#f1f5f9;">CBAM-Compliance erfordert spezialisierte Expertise in Bereichen wie:</p>
+            <ul style="line-height:1.6; font-weight:400; color:#f1f5f9;">
+              <li>Technische Emissionsdatenverifizierung</li>
+              <li>Rechtliche Compliance-Strukturen</li>
+              <li>IT-Systemintegration für Datenmanagement</li>
+              <li>Lieferanten-Engagement und Vertragsgestaltung</li>
+              <li>Risikomanagement und Kostenoptimierung</li>
+              <li>Audit-Bereitschaft und Verifizierungsprozesse</li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Ihr Name: <span class="required">*</span></div>
-        <div>
-          <input type="text" class="info-input" id="contact-name" placeholder="z.B. Max Mustermann" required>
-          <div class="error-message" id="contact-name-error"></div>
-        </div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">E-Mail: <span class="required">*</span></div>
-        <div>
-          <input type="email" class="info-input" id="contact-email" placeholder="z.B. max.mustermann@firma.at" required>
-          <div class="error-message" id="contact-email-error"></div>
-        </div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Hauptlieferanten (Länder):</div>
-        <input type="text" class="info-input" id="eu-buyers" placeholder="z.B. Türkei, Ukraine, Serbien, China">
-      </div>
-      <div class="info-row">
-        <div class="info-label">Unternehmensgröße:</div>
-        <select class="info-input" id="company-size">
-          <option value="">Bitte wählen...</option>
-          <option value="small">Klein (&lt; 50 Mitarbeiter)</option>
-          <option value="medium">Mittel (50-250 Mitarbeiter)</option>
-          <option value="large">Groß (&gt; 250 Mitarbeiter)</option>
-        </select>
       </div>
     </div>
 
-    <h3 style="color:#060496; text-align:center; margin:20px 0; font-weight:600;">CBAM-Compliance-Bereitschaftscheck</h3>
+    <div class="austria-germany-info">
+      <h2 style="font-weight:500;">Regulatorische Anforderungen für deutsche und österreichische Importeure</h2>
+      <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin:15px 0;">
+        <h3 style="font-weight:500;">CBAM-Deklarant-Autorisierung</h3>
+        <p style="font-weight:400;">Ab 1. Januar 2026 ist eine Autorisierung als CBAM-Deklarant erforderlich. Anträge können ab März 2025 bei den nationalen Behörden gestellt werden.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin:15px 0;">
+        <h3 style="font-weight:500;">Hauptverantwortlichkeiten</h3>
+        <p style="font-weight:400;">Sammlung von Emissionsdaten der Lieferanten, Quartalsberichterstattung bis Ende 2025, Kauf und Abgabe von CBAM-Zertifikaten ab 2026, unabhängige Verifizierung der Berichte und jährliche Deklaration bis 31. Mai.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin:15px 0;">
+        <h3 style="font-weight:500;">Schwellenwerte und Sanktionen</h3>
+        <p style="font-weight:400;">50-Tonnen-Regel: Importeure unter 50 t/Jahr sind von der Berichtspflicht befreit (ausgenommen Wasserstoff und Elektrizität). Sanktionen: 10-50€ pro Tonne in der Übergangsphase, ab 2026: 100€ pro fehlendes CBAM-Zertifikat.</p>
+      </div>
+    </div>
+
+    <h3 style="color:#060496; text-align:center; margin:20px 0; font-weight:500;">CBAM-Compliance-Bereitschaftscheck</h3>
+    <p style="text-align:center; color:#666; margin-bottom:20px; font-weight:400;">Eine systematische Bewertung Ihrer CBAM-Vorbereitung kann Ihnen dabei helfen, Prioritäten zu setzen und kritische Lücken zu identifizieren.</p>
 
     <div id="compliance-analysis" class="gap-analysis" style="display:block;">
-      <h2 style="color:#060496; margin-bottom:20px; font-weight:700;">CBAM-Compliance-Bereitschaftscheck für Importeure</h2>
-      <div class="question-block">
+      <h2 style="color:#060496; margin-bottom:20px; font-weight:600;">CBAM-Compliance-Bereitschaftscheck für Importeure</h2>
+      <div class="question-block" data-question="1">
         <div class="question-title">1. CBAM-Deklarant-Autorisierung</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Erledigt<br><small>Autorisierung beantragt/erhalten</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">In Planung<br><small>Vorbereitung läuft</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Noch nicht begonnen<br><small>Keine Maßnahmen eingeleitet</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 1, 'have')">Erledigt<br><small>Autorisierung beantragt/erhalten</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 1, 'partial')">In Planung<br><small>Vorbereitung läuft</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 1, 'need')">Noch nicht begonnen<br><small>Keine Maßnahmen eingeleitet</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="2">
         <div class="question-title">2. Lieferanten-Datensammlung & -management</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Etabliert<br><small>System funktioniert gut</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">Teilweise<br><small>Einige Lieferanten kooperieren</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Fehlt<br><small>Keine strukturierte Datensammlung</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 2, 'have')">Etabliert<br><small>System funktioniert gut</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 2, 'partial')">Teilweise<br><small>Einige Lieferanten kooperieren</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 2, 'need')">Fehlt<br><small>Keine strukturierte Datensammlung</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="3">
         <div class="question-title">3. CBAM-Registry & Berichtssystem</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Betriebsbereit<br><small>Regelmäßige Berichte abgegeben</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">Teilweise<br><small>Zugang vorhanden, Nutzung sporadisch</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Nicht vorbereitet<br><small>Kein Zugang oder Training</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 3, 'have')">Betriebsbereit<br><small>Regelmäßige Berichte abgegeben</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 3, 'partial')">Teilweise<br><small>Zugang vorhanden, Nutzung sporadisch</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 3, 'need')">Nicht vorbereitet<br><small>Kein Zugang oder Training</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="4">
         <div class="question-title">4. Interne CBAM-Organisation & Prozesse</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Gut organisiert<br><small>Klare Rollen & Prozesse</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">In Aufbau<br><small>Teilweise definiert</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Fehlend<br><small>Keine klaren Zuständigkeiten</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 4, 'have')">Gut organisiert<br><small>Klare Rollen & Prozesse</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 4, 'partial')">In Aufbau<br><small>Teilweise definiert</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 4, 'need')">Fehlend<br><small>Keine klaren Zuständigkeiten</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="5">
         <div class="question-title">5. Finanzplanung für CBAM-Zertifikate</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Budgetiert<br><small>Finanzierung gesichert</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">Geplant<br><small>Schätzungen vorhanden</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Ungeplant<br><small>Keine Budgetierung</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 5, 'have')">Budgetiert<br><small>Finanzierung gesichert</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 5, 'partial')">Geplant<br><small>Schätzungen vorhanden</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 5, 'need')">Ungeplant<br><small>Keine Budgetierung</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="6">
         <div class="question-title">6. Verifizierung & Audit-Bereitschaft</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Bereit<br><small>Prüfer identifiziert, Systeme auditfähig</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">In Vorbereitung<br><small>Teilweise vorbereitet</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Nicht bereit<br><small>Keine Vorbereitung</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 6, 'have')">Bereit<br><small>Prüfer identifiziert, Systeme auditfähig</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 6, 'partial')">In Vorbereitung<br><small>Teilweise vorbereitet</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 6, 'need')">Nicht bereit<br><small>Keine Vorbereitung</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="7">
         <div class="question-title">7. Rechtliche & Compliance-Expertise</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Vorhanden<br><small>Experten im Team/extern</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">Grundwissen<br><small>Basiskenntnisse vorhanden</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Fehlt<br><small>Keine Expertise aufgebaut</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 7, 'have')">Vorhanden<br><small>Experten im Team/extern</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 7, 'partial')">Grundwissen<br><small>Basiskenntnisse vorhanden</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 7, 'need')">Fehlt<br><small>Keine Expertise aufgebaut</small></div>
         </div>
       </div>
-      <div class="question-block">
+      <div class="question-block" data-question="8">
         <div class="question-title">8. IT-Systeme & Datenmanagement</div>
         <div class="status-grid">
-          <div class="status-option status-have" onclick="selectStatus(this)">Integriert<br><small>Systeme funktionieren</small></div>
-          <div class="status-option status-partial" onclick="selectStatus(this)">Teilweise<br><small>Manuelle Prozesse</small></div>
-          <div class="status-option status-need" onclick="selectStatus(this)">Nicht vorbereitet<br><small>Keine IT-Lösung</small></div>
+          <div class="status-option status-have" onclick="selectStatus(this, 8, 'have')">Integriert<br><small>Systeme funktionieren</small></div>
+          <div class="status-option status-partial" onclick="selectStatus(this, 8, 'partial')">Teilweise<br><small>Manuelle Prozesse</small></div>
+          <div class="status-option status-need" onclick="selectStatus(this, 8, 'need')">Nicht vorbereitet<br><small>Keine IT-Lösung</small></div>
         </div>
       </div>
     </div>
@@ -271,15 +310,6 @@
     <div class="results-section" id="results" style="display:none;">
       <h2 style="margin-bottom:20px;">Ergebnisse der CBAM Gap-Analyse</h2>
       <div id="results-content"></div>
-      <div class="chart-container">
-        <h3 style="margin-bottom:20px; text-align:center; color:white;">CBAM-Kostenprognose 2026-2034</h3>
-        <div class="chart-wrapper">
-          <canvas id="projectionChart"></canvas>
-        </div>
-        <div style="margin-top:15px; font-size:0.9em; text-align:center; color:#ddd;">
-          <p>Hinweis: Die Grafik zeigt prognostizierte CBAM-Kosten basierend auf konservativen Marktprognosen</p>
-        </div>
-      </div>
       <div style="text-align:center; margin-top:30px;">
         <button class="generate-btn" onclick="submitToGoogleSheets()" id="submitBtn">Ergebnisse senden & Beratung anfordern</button>
         <p style="margin-top:10px; font-size:0.9em;">Die Ergebnisse werden zur detaillierten Analyse gesendet</p>
@@ -342,68 +372,61 @@
     <!-- Cross-Functional Implementation Section -->
     <div style="background:#060496; color:white; padding:30px; border-radius:15px; margin:30px 0;">
       <h2 style="margin-bottom:25px; font-weight:600;">CBAM-Integration in Unternehmensstrukturen</h2>
+      <p style="margin-bottom:20px; font-weight:400;">CBAM betrifft multiple Unternehmensbereiche und erfordert koordinierte Ansätze:</p>
       
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:25px;">
         <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px;">
           <h3 style="margin-bottom:15px; font-weight:500;">Nachhaltigkeitsmanagement</h3>
-          <p style="font-weight:400; margin-bottom:15px;">CBAM transformiert Nachhaltigkeit von einer CSR-Funktion zu einem operativen Geschäftsfaktor mit direkten Kostenauswirkungen.</p>
+          <p style="font-weight:400; margin-bottom:15px;">CBAM transformiert CO₂-Intensität zu messbaren Geschäftsfaktoren. Zentrale Aspekte umfassen:</p>
           <ul style="line-height:1.6; font-weight:400;">
-            <li>Scope-3-Emissionen werden zu direkten Kostenkomponenten</li>
-            <li>Lieferanten-Nachhaltigkeitsbewertungen erhalten finanzielle Relevanz</li>
-            <li>CO₂-Intensität wird zu einem Beschaffungskriterium</li>
-            <li>Dekarbonisierungsstrategien beeinflussen Lieferkettenentscheidungen</li>
-            <li>Nachhaltigkeitsberichterstattung wird compliance-relevant</li>
+            <li>Scope-3-Emissionen als direkte Kostenkomponenten</li>
+            <li>Lieferanten-Nachhaltigkeitsbewertungen mit finanzieller Relevanz</li>
+            <li>CO₂-Intensität als neues Beschaffungskriterium</li>
+            <li>Compliance-relevante Nachhaltigkeitsberichterstattung</li>
           </ul>
+          <p style="margin-top:10px; font-style:italic; font-size:0.9em;">Detaillierte Implementierungsstrategien erfordern unternehmensspezifische Beratung.</p>
         </div>
 
         <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px;">
           <h3 style="margin-bottom:15px; font-weight:500;">Supply Chain Management</h3>
-          <p style="font-weight:400; margin-bottom:15px;">Lieferketten müssen neue Parameter in Lieferantenbewertung und Sourcing-Strategien integrieren.</p>
+          <p style="font-weight:400; margin-bottom:15px;">CBAM-Kosten beeinflussen fundamentale Sourcing-Entscheidungen:</p>
           <ul style="line-height:1.6; font-weight:400;">
-            <li>Lieferanten-Emissionsdaten als Auswahlkriterium etablieren</li>
-            <li>CBAM-Kosten in Total Cost of Ownership einbeziehen</li>
-            <li>Regionale vs. globale Beschaffungsstrategien neu bewerten</li>
-            <li>Langfristige Verträge mit CBAM-Preisklauseln ausstatten</li>
-            <li>Alternative Lieferquellen in EU-Ländern identifizieren</li>
+            <li>Lieferanten-Emissionsdaten als Auswahlkriterium</li>
+            <li>CBAM-Kosten in Total Cost of Ownership</li>
+            <li>Regionale vs. globale Beschaffungsstrategien</li>
+            <li>Langfristige Verträge mit CBAM-Preisklauseln</li>
           </ul>
+          <p style="margin-top:10px; font-style:italic; font-size:0.9em;">Strategische Sourcing-Optimierung benötigt spezialisierte Expertise.</p>
         </div>
 
         <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px;">
           <h3 style="margin-bottom:15px; font-weight:500;">Finanzwesen & Controlling</h3>
-          <p style="font-weight:400; margin-bottom:15px;">CFOs und Controller müssen CBAM-Kosten in Budgetplanung, Risikomanagement und Finanzberichterstattung integrieren.</p>
+          <p style="font-weight:400; margin-bottom:15px;">CBAM schafft neue finanzielle Komplexitäten:</p>
           <ul style="line-height:1.6; font-weight:400;">
-            <li>CBAM-Kosten in Budgetplanung und Forecasting einbeziehen</li>
-            <li>CO₂-Preisvolatilität als neues Marktrisiko managen</li>
-            <li>Hedging-Strategien für CBAM-Zertifikatskosten entwickeln</li>
-            <li>Produktkalkulation um CO₂-Kostenkomponenten erweitern</li>
-            <li>Working Capital für CBAM-Zertifikatskäufe einplanen</li>
+            <li>CBAM-Kosten in Budgetplanung und Forecasting</li>
+            <li>CO₂-Preisvolatilität als neues Marktrisiko</li>
+            <li>Produktkalkulation mit CO₂-Kostenkomponenten</li>
+            <li>Working Capital für CBAM-Zertifikatskäufe</li>
           </ul>
-        </div>
-      </div>
-
-      <div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin-top:25px;">
-        <h3 style="margin-bottom:15px; font-weight:500;">Interdisziplinäre CBAM-Implementierung</h3>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; margin-top:15px;">
-          <div>
-            <h4 style="font-weight:500; margin-bottom:10px;">Operative Ebene</h4>
-            <p style="font-weight:400; font-size:0.9em;">Einkauf, Logistik und Produktion müssen CBAM-Anforderungen in tägliche Prozesse integrieren und Lieferantendaten systematisch erheben.</p>
-          </div>
-          <div>
-            <h4 style="font-weight:500; margin-bottom:10px;">Strategische Ebene</h4>
-            <p style="font-weight:400; font-size:0.9em;">Geschäftsführung und Bereichsleiter benötigen CBAM-Kostenprognosen für strategische Entscheidungen über Märkte und Geschäftsmodelle.</p>
-          </div>
-          <div>
-            <h4 style="font-weight:500; margin-bottom:10px;">Compliance-Ebene</h4>
-            <p style="font-weight:400; font-size:0.9em;">Rechts- und Compliance-Abteilungen müssen Berichtspflichten erfüllen und Sanktionsrisiken minimieren.</p>
-          </div>
+          <p style="margin-top:10px; font-style:italic; font-size:0.9em;">Risikomanagement und Hedging-Strategien erfordern professionelle Entwicklung.</p>
         </div>
       </div>
 
       <div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin-top:25px; text-align:center;">
-        <h3 style="margin-bottom:15px; font-weight:500;">Kostentransparenz als Grundlage strategischer Entscheidungen</h3>
-        <p style="font-weight:400; font-size:1.1em;">Präzise CBAM-Kostenprognosen ermöglichen fundierte Entscheidungen über Lieferantenauswahl, Produktportfolio und Marktpositionierung. Dieses Tool unterstützt alle Unternehmensbereiche bei der quantitativen Bewertung von CBAM-Auswirkungen.</p>
-        <p style="font-weight:400; margin-top:15px;">Kontaktieren Sie uns für detaillierte Implementierungsstrategien und bereichsspezifische CBAM-Analysen.</p>
+        <h3 style="margin-bottom:15px; font-weight:500;">Koordinierte Implementierung notwendig</h3>
+        <p style="font-weight:400; font-size:1.1em;">CBAM-Compliance erfordert die Koordination multipler Unternehmensbereiche mit spezialisierten Kenntnissen in Regulatorik, Technik und Operations. Die Komplexität der interdependenten Faktoren macht professionelle Implementierungsbegleitung für eine erfolgreiche und kostenoptimierte Umsetzung unerlässlich.</p>
       </div>
+    </div>
+
+    <!-- Final CTA Box -->
+    <div style="background:#f8f9fa; border:2px solid #060496; padding:25px; border-radius:15px; margin:30px 0; text-align:center;">
+      <h3 style="color:#060496; margin-bottom:20px; font-weight:600;">Sind Sie bereit für eine professionelle CBAM-Begleitung?</h3>
+      <p style="color:#333; margin-bottom:20px; font-weight:400;">Von der Kostenschätzung zur vollständigen CBAM-Compliance - entwickeln Sie mit uns Ihre maßgeschneiderte Implementierungsstrategie.</p>
+      
+      <a href="mailto:info@entrenovu.com?subject=CBAM-Komplettberatung&body=Sehr geehrte Damen und Herren,%0D%0A%0D%0AIch interessiere mich für eine umfassende CBAM-Beratung und Implementierungsbegleitung.%0D%0A%0D%0AMit freundlichen Grüßen" 
+         style="background:#060496; color:white; padding:15px 40px; border-radius:8px; text-decoration:none; font-weight:600; display:inline-block; margin-top:15px; font-size:1.1em;">
+        Vollständige CBAM-Beratung: info@entrenovu.com
+      </a>
     </div>
   </div>
 
@@ -412,158 +435,92 @@
     let costProjectionChart = null;
     let productCounter = 0;
     let includeIndirect = false;
+    let analysisAnswers = {};
 
-    // Conservative CO2 price forecast
     const co2Prices = { 2026:90, 2027:95, 2028:108, 2029:120, 2030:138, 2031:148, 2032:158, 2033:168, 2034:178 };
-
-    // CBAM phase-in
     const cbamPhaseIn = { 2026:0.975, 2027:1.0, 2028:1.0, 2029:1.0, 2030:1.0, 2031:1.0, 2032:1.0, 2033:1.0, 2034:1.0 };
 
-    // ETS benchmarks (tCO2/t)
     const ETS_BM = {
-      clinker_grey: 0.693,
-      clinker_white: 0.957,
-      hot_metal: 1.288,
-      eaf_carbon_steel: 0.215,
-      eaf_high_alloy_steel: 0.268,
-      primary_aluminium: 1.464,
-      ammonia: 1.570,
-      nitric_acid: 0.230,
-      hydrogen: 6.84
+      clinker_grey: 0.693, clinker_white: 0.957, hot_metal: 1.288, eaf_carbon_steel: 0.215, eaf_high_alloy_steel: 0.268,
+      primary_aluminium: 1.464, ammonia: 1.570, nitric_acid: 0.230, hydrogen: 6.84
     };
 
-    // CN database (direct/indirect/total in tCO2/t) + mapped BM when applicable
     const cnCodeDatabaseRaw = {
       // CEMENT
-      "2507 00 80": { sector:"Cement", product:"Other kaolinic clays (calcined)", direct:0.23, indirect:0.08, total:0.32, benchmark:null },
+      "2507 00 80": { sector:"Cement", product:"Other kaolinic clays (calcined clay only; non-calcined=0)", direct:0.23, indirect:0.08, total:0.32, benchmark:null },
       "2523 10 00": { sector:"Cement", product:"Cement clinkers (grey)", direct:0.83, indirect:0.04, total:0.87, benchmark:ETS_BM.clinker_grey },
       "2523 21 00": { sector:"Cement", product:"White Portland cement", direct:1.16, indirect:0.10, total:1.26, benchmark:ETS_BM.clinker_white },
       "2523 29 00": { sector:"Cement", product:"Other Portland cement", direct:0.81, indirect:0.06, total:0.87, benchmark:ETS_BM.clinker_grey },
       "2523 90 00": { sector:"Cement", product:"Other hydraulic cements", direct:0.59, indirect:0.04, total:0.63, benchmark:ETS_BM.clinker_grey },
       "2523 30 00": { sector:"Cement", product:"Aluminous cement", direct:1.75, indirect:0.15, total:1.90, benchmark:null },
-
       // FERTILISERS
       "2808 00 00": { sector:"Fertilisers", product:"Nitric acid", direct:2.56, indirect:0.05, total:2.60, benchmark:ETS_BM.nitric_acid },
-      "2814":        { sector:"Fertilisers", product:"Ammonia", direct:2.68, indirect:0.14, total:2.82, benchmark:ETS_BM.ammonia },
+      "2814": { sector:"Fertilisers", product:"Ammonia", direct:2.68, indirect:0.14, total:2.82, benchmark:ETS_BM.ammonia },
       "2834 21 00": { sector:"Fertilisers", product:"Nitrates of potassium", direct:1.82, indirect:0.06, total:1.88, benchmark:null },
-      "3102 10":    { sector:"Fertilisers", product:"Urea", direct:1.78, indirect:0.12, total:1.90, benchmark:ETS_BM.ammonia },
+      "3102 10": { sector:"Fertilisers", product:"Urea", direct:1.78, indirect:0.12, total:1.90, benchmark:ETS_BM.ammonia },
       "3102 21 00": { sector:"Fertilisers", product:"Ammonium sulphate", direct:0.86, indirect:0.09, total:0.94, benchmark:ETS_BM.ammonia },
       "3102 29 00": { sector:"Fertilisers", product:"Double salts (AS & AN)", direct:1.54, indirect:0.10, total:1.63, benchmark:ETS_BM.ammonia },
-      "3102 30":    { sector:"Fertilisers", product:"Ammonium nitrate", direct:2.32, indirect:0.07, total:2.39, benchmark:ETS_BM.ammonia },
-      "3102 40":    { sector:"Fertilisers", product:"CAN", direct:1.77, indirect:0.06, total:1.84, benchmark:ETS_BM.ammonia },
+      "3102 30": { sector:"Fertilisers", product:"Ammonium nitrate", direct:2.32, indirect:0.07, total:2.39, benchmark:ETS_BM.ammonia },
+      "3102 40": { sector:"Fertilisers", product:"CAN", direct:1.77, indirect:0.06, total:1.84, benchmark:ETS_BM.ammonia },
       "3102 50 00": { sector:"Fertilisers", product:"Sodium nitrate", direct:3.99, indirect:0.07, total:4.06, benchmark:null },
       "3102 60 00": { sector:"Fertilisers", product:"Calcium nitrate + AN", direct:1.87, indirect:0.08, total:1.95, benchmark:ETS_BM.ammonia },
       "3102 80 00": { sector:"Fertilisers", product:"UAN", direct:1.28, indirect:0.06, total:1.34, benchmark:ETS_BM.ammonia },
       "3102 90 00": { sector:"Fertilisers", product:"Other nitrogen fertilisers", direct:1.65, indirect:0.10, total:1.74, benchmark:ETS_BM.ammonia },
       "3105 10 00": { sector:"Fertilisers", product:"Tablets/similar ≤10kg", direct:0.94, indirect:0.08, total:1.02, benchmark:ETS_BM.ammonia },
-      "3105 20":    { sector:"Fertilisers", product:"NPK fertilisers", direct:1.23, indirect:0.11, total:1.35, benchmark:ETS_BM.ammonia },
+      "3105 20": { sector:"Fertilisers", product:"NPK fertilisers", direct:1.23, indirect:0.11, total:1.35, benchmark:ETS_BM.ammonia },
       "3105 30 00": { sector:"Fertilisers", product:"DAP", direct:0.69, indirect:0.06, total:0.75, benchmark:ETS_BM.ammonia },
       "3105 40 00": { sector:"Fertilisers", product:"MAP", direct:0.44, indirect:0.05, total:0.49, benchmark:ETS_BM.ammonia },
       "3105 51 00": { sector:"Fertilisers", product:"Other N+P", direct:1.29, indirect:0.11, total:1.40, benchmark:ETS_BM.ammonia },
       "3105 59 00": { sector:"Fertilisers", product:"Other N+P (other)", direct:1.29, indirect:0.11, total:1.40, benchmark:ETS_BM.ammonia },
-      "3105 90":    { sector:"Fertilisers", product:"Other (incl. blends)", direct:0.94, indirect:0.08, total:1.02, benchmark:ETS_BM.ammonia },
-
+      "3105 90": { sector:"Fertilisers", product:"Other (incl. blends)", direct:0.94, indirect:0.08, total:1.02, benchmark:ETS_BM.ammonia },
       // ALUMINIUM
-      "7601":       { sector:"Aluminium", product:"Unwrought aluminium", direct:2.36, indirect:8.14, total:10.49, benchmark:ETS_BM.primary_aluminium },
-      "7603":       { sector:"Aluminium", product:"Aluminium powders & flakes", direct:2.48, indirect:8.40, total:10.88, benchmark:ETS_BM.primary_aluminium },
-      "7604 10 10": { sector:"Aluminium", product:"Bars/rods not alloyed", direct:2.31, indirect:7.49, total:9.80, benchmark:ETS_BM.primary_aluminium },
-      "7604 10 90": { sector:"Aluminium", product:"Profiles not alloyed", direct:2.73, indirect:9.30, total:12.04, benchmark:ETS_BM.primary_aluminium },
-      "7604 21 00": { sector:"Aluminium", product:"Hollow profiles (alloy)", direct:2.73, indirect:9.30, total:12.04, benchmark:ETS_BM.primary_aluminium },
-      "7604 29 10": { sector:"Aluminium", product:"Bars/rods alloys", direct:2.31, indirect:7.49, total:9.80, benchmark:ETS_BM.primary_aluminium },
-      "7604 29 90": { sector:"Aluminium", product:"Profiles alloys", direct:2.73, indirect:9.30, total:12.04, benchmark:ETS_BM.primary_aluminium },
-      "7605":       { sector:"Aluminium", product:"Wire", direct:2.31, indirect:7.49, total:9.80, benchmark:ETS_BM.primary_aluminium },
-      "7606":       { sector:"Aluminium", product:"Plates/sheets/strip >0.2mm", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-      "7607":       { sector:"Aluminium", product:"Foil ≤0.2mm", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-      "7608":       { sector:"Aluminium", product:"Tubes/pipes", direct:2.73, indirect:9.30, total:12.04, benchmark:ETS_BM.primary_aluminium },
-      "7609 00 00": { sector:"Aluminium", product:"Tube/pipe fittings", direct:2.73, indirect:9.30, total:12.04, benchmark:ETS_BM.primary_aluminium },
-      "7610":       { sector:"Aluminium", product:"Structures; prepared plates/rods/profiles", direct:2.73, indirect:9.30, total:12.04, benchmark:ETS_BM.primary_aluminium },
-      "7611 00 00": { sector:"Aluminium", product:"Reservoirs/tanks >300l", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-      "7612":       { sector:"Aluminium", product:"Casks/drums/cans/boxes ≤300l", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-      "7613 00 00": { sector:"Aluminium", product:"Containers for compressed/liquefied gas", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-      "7614":       { sector:"Aluminium", product:"Stranded wire/cables", direct:2.31, indirect:7.49, total:9.80, benchmark:ETS_BM.primary_aluminium },
-      "7616 10 00": { sector:"Aluminium", product:"Nails/screws/bolts/nuts/washers", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-      "7616 91 00": { sector:"Aluminium", product:"Cloth/grill/netting/fencing", direct:2.31, indirect:7.49, total:9.80, benchmark:ETS_BM.primary_aluminium },
-      "7616 99 10": { sector:"Aluminium", product:"Other articles – Cast", direct:2.48, indirect:8.40, total:10.88, benchmark:ETS_BM.primary_aluminium },
-      "7616 99 90": { sector:"Aluminium", product:"Other articles – Other", direct:2.86, indirect:9.25, total:12.11, benchmark:ETS_BM.primary_aluminium },
-
+      "7601": { sector:"Aluminium", product:"Unwrought aluminium", direct:2.36, indirect:8.14, total:10.49, benchmark:ETS_BM.primary_aluminium },
+      "7603": { sector:"Aluminium", product:"Aluminium powders and flakes", direct:2.48, indirect:8.40, total:10.88, benchmark:null },
+      "7604 10 10": { sector:"Aluminium", product:"Bars/rods of aluminium, not alloyed", direct:2.31, indirect:7.49, total:9.80, benchmark:null },
+      "7604 10 90": { sector:"Aluminium", product:"Profiles of aluminium, not alloyed", direct:2.73, indirect:9.30, total:12.04, benchmark:null },
+      "7604 21 00": { sector:"Aluminium", product:"Hollow profiles of aluminium alloys", direct:2.73, indirect:9.30, total:12.04, benchmark:null },
+      "7604 29 10": { sector:"Aluminium", product:"Bars/rods of aluminium alloys", direct:2.31, indirect:7.49, total:9.80, benchmark:null },
+      "7604 29 90": { sector:"Aluminium", product:"Profiles of aluminium alloys", direct:2.73, indirect:9.30, total:12.04, benchmark:null },
+      "7605": { sector:"Aluminium", product:"Aluminium wire", direct:2.31, indirect:7.49, total:9.80, benchmark:null },
+      "7606": { sector:"Aluminium", product:"Aluminium plates, sheets & strip (>0.2 mm)", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
+      "7607": { sector:"Aluminium", product:"Aluminium foil (≤0.2 mm)", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
+      "7608": { sector:"Aluminium", product:"Aluminium tubes and pipes", direct:2.73, indirect:9.30, total:12.04, benchmark:null },
+      "7609 00 00": { sector:"Aluminium", product:"Aluminium tube or pipe fittings", direct:2.73, indirect:9.30, total:12.04, benchmark:null },
+      "7610": { sector:"Aluminium", product:"Aluminium structures; prepared plates/rods/profiles", direct:2.73, indirect:9.30, total:12.04, benchmark:null },
+      "7611 00 00": { sector:"Aluminium", product:"Aluminium reservoirs/tanks/vats >300 l", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
+      "7612": { sector:"Aluminium", product:"Aluminium casks/drums/cans/boxes ≤300 l", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
+      "7613 00 00": { sector:"Aluminium", product:"Aluminium containers for compressed or liquefied gas", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
+      "7614": { sector:"Aluminium", product:"Stranded wire/cables/plaited bands of aluminium", direct:2.31, indirect:7.49, total:9.80, benchmark:null },
+      "7616 10 00": { sector:"Aluminium", product:"Aluminium nails/screws/bolts/nuts/washers etc.", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
+      "7616 91 00": { sector:"Aluminium", product:"Cloth/grill/netting/fencing of aluminium wire", direct:2.31, indirect:7.49, total:9.80, benchmark:null },
+      "7616 99 10": { sector:"Aluminium", product:"Other articles of aluminium – Cast", direct:2.48, indirect:8.40, total:10.88, benchmark:null },
+      "7616 99 90": { sector:"Aluminium", product:"Other articles of aluminium – Other", direct:2.86, indirect:9.25, total:12.11, benchmark:null },
       // HYDROGEN
       "2804 10 00": { sector:"Hydrogen", product:"Hydrogen", direct:10.4, indirect:0.0, total:10.4, benchmark:ETS_BM.hydrogen },
-
       // IRON & STEEL
       "2601 12 00": { sector:"Iron & steel", product:"Agglomerated iron ores (sintered)", direct:0.31, indirect:0.05, total:0.36, benchmark:null },
-      "7201":       { sector:"Iron & steel", product:"Pig iron & spiegeleisen", direct:1.90, indirect:0.17, total:2.07, benchmark:ETS_BM.hot_metal },
+      "7201": { sector:"Iron & steel", product:"Pig iron & spiegeleisen", direct:1.90, indirect:0.17, total:2.07, benchmark:ETS_BM.hot_metal },
+      "7202 10": { sector:"Iron & steel", product:"Ferro-manganese", direct:1.44, indirect:2.08, total:3.51, benchmark:null },
+      "7202 40": { sector:"Iron & steel", product:"Ferro-chromium", direct:2.08, indirect:3.38, total:5.45, benchmark:null },
+      "7202 60": { sector:"Iron & steel", product:"Ferro-nickel", direct:3.49, indirect:2.81, total:6.26, benchmark:null },
+      "7203": { sector:"Iron & steel", product:"DRI & other spongy ferrous products", direct:4.81, indirect:0.00, total:4.81, benchmark:null },
       "7206 10 00": { sector:"Iron & steel", product:"Ingots (non-alloy) - crude steel", direct:2.52, indirect:0.23, total:2.75, benchmark:ETS_BM.eaf_carbon_steel },
       "7206 90 00": { sector:"Iron & steel", product:"Other primary forms (non-alloy) - crude steel", direct:1.97, indirect:0.23, total:2.20, benchmark:ETS_BM.eaf_carbon_steel },
-      "7207 19 19": { sector:"Iron & steel", product:"Semi-finished: forged", direct:2.65, indirect:0.62, total:3.27, benchmark:null },
-      "7207 19 80": { sector:"Iron & steel", product:"Semi-finished: other", direct:1.89, indirect:0.32, total:2.21, benchmark:null },
-      "7207 20 80": { sector:"Iron & steel", product:"Semi-finished: other", direct:1.89, indirect:0.32, total:2.21, benchmark:null },
-      "7208":       { sector:"Iron & steel", product:"Flat non-alloy ≥600mm hot-rolled", direct:2.01, indirect:0.27, total:2.28, benchmark:null },
-      "7209":       { sector:"Iron & steel", product:"Flat non-alloy ≥600mm cold-rolled", direct:2.03, indirect:0.36, total:2.39, benchmark:null },
-      "7210":       { sector:"Iron & steel", product:"Flat non-alloy ≥600mm coated", direct:1.97, indirect:0.39, total:2.35, benchmark:null },
-      "7211 13 00": { sector:"Iron & steel", product:"Flat non-alloy <600mm ≥4mm not in coils", direct:2.01, indirect:0.27, total:2.28, benchmark:null },
-      "7211 23":    { sector:"Iron & steel", product:"Flat non-alloy <600mm <0.25% C", direct:2.03, indirect:0.36, total:2.39, benchmark:null },
-      "7212":       { sector:"Iron & steel", product:"Flat non-alloy <600mm coated", direct:1.97, indirect:0.39, total:2.35, benchmark:null },
-      "7213":       { sector:"Iron & steel", product:"Bars & rods, hot-rolled, in coils (non-alloy)", direct:1.89, indirect:0.32, total:2.21, benchmark:null },
-      "7214 10 00": { sector:"Iron & steel", product:"Bars & rods non-alloy forged", direct:2.65, indirect:0.62, total:3.27, benchmark:null },
-      "7214 20 00": { sector:"Iron & steel", product:"Bars & rods non-alloy deformed", direct:1.89, indirect:0.32, total:2.21, benchmark:null },
-      "7215":       { sector:"Iron & steel", product:"Other bars & rods non-alloy", direct:1.89, indirect:0.32, total:2.21, benchmark:null },
-      "7216":       { sector:"Iron & steel", product:"Angles/shapes/sections non-alloy", direct:1.89, indirect:0.32, total:2.21, benchmark:null },
-      "7217 10":    { sector:"Iron & steel", product:"Wire non-alloy (not plated/coated)", direct:1.88, indirect:0.49, total:2.37, benchmark:null },
-      "7217 30":    { sector:"Iron & steel", product:"Wire non-alloy (plated/coated)", direct:1.95, indirect:0.51, total:2.46, benchmark:null },
+      "7208": { sector:"Iron & steel", product:"Flat non-alloy ≥600mm hot-rolled", direct:2.01, indirect:0.27, total:2.28, benchmark:null },
+      "7209": { sector:"Iron & steel", product:"Flat non-alloy ≥600mm cold-rolled", direct:2.03, indirect:0.36, total:2.39, benchmark:null },
+      "7210": { sector:"Iron & steel", product:"Flat non-alloy ≥600mm coated", direct:1.97, indirect:0.39, total:2.35, benchmark:null },
       "7219 11 00": { sector:"Iron & steel", product:"Stainless flat ≥600mm >10mm", direct:2.18, indirect:1.90, total:4.08, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7219 31 00": { sector:"Iron & steel", product:"Stainless flat <600mm ≥4.75mm", direct:2.21, indirect:1.99, total:4.19, benchmark:ETS_BM.eaf_high_alloy_steel },
       "7220 11 00": { sector:"Iron & steel", product:"Stainless flat <600mm ≥4.75mm", direct:2.18, indirect:1.90, total:4.08, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7220 12 00": { sector:"Iron & steel", product:"Stainless flat <600mm <4.75mm", direct:2.18, indirect:1.90, total:4.08, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7220 20":    { sector:"Iron & steel", product:"Stainless flat <600mm cold-reduced", direct:2.21, indirect:1.99, total:4.19, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7221":       { sector:"Iron & steel", product:"Bars & rods, hot-rolled, in coils (stainless)", direct:2.14, indirect:2.17, total:4.30, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7222 20":    { sector:"Iron & steel", product:"Bars & rods, cold-finished (stainless)", direct:2.14, indirect:2.17, total:4.30, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7222 30":    { sector:"Iron & steel", product:"Other bars & rods (stainless)", direct:2.51, indirect:2.10, total:4.61, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7223 00":    { sector:"Iron & steel", product:"Wire of stainless steel", direct:2.13, indirect:2.36, total:4.49, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7225 30":    { sector:"Iron & steel", product:"Other-alloy flat ≥600mm hot-rolled (in coils)", direct:1.95, indirect:0.40, total:2.35, benchmark:null },
-      "7225 40":    { sector:"Iron & steel", product:"Other-alloy flat ≥600mm hot-rolled (not in coils)", direct:1.95, indirect:0.40, total:2.35, benchmark:null },
-      "7225 50":    { sector:"Iron & steel", product:"Other-alloy flat ≥600mm cold-rolled", direct:1.98, indirect:0.49, total:2.46, benchmark:null },
-      "7225 91 00": { sector:"Iron & steel", product:"Other-alloy flat ≥600mm electrolytically zinc-coated", direct:1.92, indirect:0.51, total:2.43, benchmark:null },
-      "7225 92 00": { sector:"Iron & steel", product:"Other-alloy flat ≥600mm otherwise zinc-coated", direct:1.92, indirect:0.51, total:2.43, benchmark:null },
-      "7225 99 00": { sector:"Iron & steel", product:"Other-alloy flat ≥600mm other", direct:1.92, indirect:0.51, total:2.43, benchmark:null },
-      "7226 19 10": { sector:"Iron & steel", product:"Other-alloy flat <600mm hot-rolled", direct:1.95, indirect:0.40, total:2.35, benchmark:null },
-      "7226 20 00": { sector:"Iron & steel", product:"Other-alloy flat <600mm high-speed steel", direct:1.95, indirect:0.40, total:2.35, benchmark:null },
-      "7226 92 00": { sector:"Iron & steel", product:"Other-alloy flat <600mm cold-rolled", direct:1.98, indirect:0.49, total:2.46, benchmark:null },
-      "7226 99":    { sector:"Iron & steel", product:"Other-alloy flat <600mm other", direct:1.92, indirect:0.51, total:2.43, benchmark:null },
-      "7227":       { sector:"Iron & steel", product:"Bars & rods, hot-rolled, in coils (other-alloy)", direct:1.86, indirect:0.57, total:2.43, benchmark:null },
-      "7228 10 20": { sector:"Iron & steel", product:"Other-alloy bars/rods HR/drawn/extruded; clad", direct:1.86, indirect:0.57, total:2.43, benchmark:null },
-      "7228 10 90": { sector:"Iron & steel", product:"Other-alloy bars/rods HR/drawn/extruded; other", direct:1.86, indirect:0.57, total:2.43, benchmark:null },
-      "7228 40":    { sector:"Iron & steel", product:"Other-alloy bars/rods forged", direct:2.41, indirect:0.79, total:3.20, benchmark:null },
-      "7228 50":    { sector:"Iron & steel", product:"Other-alloy bars/rods cold-finished", direct:null, indirect:null, total:null, benchmark:null },
-      "7229":       { sector:"Iron & steel", product:"Wire of other-alloy steel", direct:1.84, indirect:0.75, total:2.59, benchmark:null },
-      "7301":       { sector:"Iron & steel", product:"Sheet piling; welded angles/shapes/sections", direct:2.03, indirect:0.36, total:2.39, benchmark:null },
-      "7302":       { sector:"Iron & steel", product:"Railway/tramway track material", direct:1.93, indirect:0.29, total:2.21, benchmark:null },
-      "7303 00":    { sector:"Iron & steel", product:"Cast-iron tubes/pipes/hollow profiles", direct:2.21, indirect:0.35, total:2.56, benchmark:null },
-      "7304 41 00": { sector:"Iron & steel", product:"Seamless tubes/pipes cold-drawn/rolled (stainless)", direct:1.86, indirect:0.35, total:2.20, benchmark:ETS_BM.eaf_high_alloy_steel },
-      "7304 51":    { sector:"Iron & steel", product:"Other seamless pipes (non-stainless)", direct:1.93, indirect:0.29, total:2.21, benchmark:null },
-      "7305":       { sector:"Iron & steel", product:"Other tubes/pipes (large diameter welded etc.)", direct:2.03, indirect:0.36, total:2.39, benchmark:null },
-      "7306 30 12": { sector:"Iron & steel", product:"Other welded tubes/pipes cold-reduced", direct:2.03, indirect:0.36, total:2.39, benchmark:null },
-      "7306 30 18": { sector:"Iron & steel", product:"Other welded tubes/pipes other", direct:2.01, indirect:0.27, total:2.28, benchmark:null },
-      "7306 40 80": { sector:"Iron & steel", product:"Other welded tubes/pipes circular other", direct:1.95, indirect:0.33, total:2.28, benchmark:null },
-      "7306 50 21": { sector:"Iron & steel", product:"Other welded tubes/pipes cold-reduced", direct:1.97, indirect:0.41, total:2.38, benchmark:null },
-      "7307 11":    { sector:"Iron & steel", product:"Pipe fittings of non-malleable cast iron", direct:2.54, indirect:0.57, total:3.11, benchmark:null },
-      "7307 19 10": { sector:"Iron & steel", product:"Pipe fittings of cast iron", direct:0.61, indirect:1.05, total:1.66, benchmark:null },
-      "7307 21 00": { sector:"Iron & steel", product:"Flanges", direct:1.87, indirect:0.43, total:2.30, benchmark:null },
-      "7307 92":    { sector:"Iron & steel", product:"Threaded elbows/bends/sleeves", direct:1.93, indirect:0.29, total:2.21, benchmark:null },
-      "7308":       { sector:"Iron & steel", product:"Structures & parts of structures", direct:2.46, indirect:2.55, total:5.01, benchmark:null },
-      "7309":       { sector:"Iron & steel", product:"Reservoirs/tanks/vats >300 l (not fitted)", direct:2.46, indirect:2.55, total:5.01, benchmark:null },
-      "7310":       { sector:"Iron & steel", product:"Containers ≤300 l (not fitted)", direct:2.46, indirect:2.55, total:5.01, benchmark:null },
-      "7311":       { sector:"Iron & steel", product:"Containers for compressed or liquefied gas", direct:2.46, indirect:2.55, total:5.01, benchmark:null },
-      "7318":       { sector:"Iron & steel", product:"Screws/bolts/nuts/washers etc.", direct:2.46, indirect:2.55, total:5.01, benchmark:null },
-      "7326":       { sector:"Iron & steel", product:"Other articles of iron or steel", direct:2.46, indirect:2.55, total:5.01, benchmark:null }
+      "7221": { sector:"Iron & steel", product:"Bars & rods, hot-rolled, in coils (stainless)", direct:2.14, indirect:2.17, total:4.30, benchmark:ETS_BM.eaf_high_alloy_steel },
+      "7222 30": { sector:"Iron & steel", product:"Other bars & rods (stainless)", direct:2.51, indirect:2.10, total:4.61, benchmark:ETS_BM.eaf_high_alloy_steel },
+      "7223 00": { sector:"Iron & steel", product:"Wire of stainless steel", direct:2.13, indirect:2.36, total:4.49, benchmark:ETS_BM.eaf_high_alloy_steel },
+      "7308": { sector:"Iron & steel", product:"Structures & parts of structures", direct:2.46, indirect:2.55, total:5.01, benchmark:null },
+      "7326": { sector:"Iron & steel", product:"Other articles of iron or steel", direct:2.46, indirect:2.55, total:5.01, benchmark:null }
     };
 
-    // Category display names
     const productCategories = { steel:'Stahl & Eisen', aluminium:'Aluminium', cement:'Zement', fertilizer:'Düngemittel', custom:'Andere' };
-
-    // Fallbacks (used ONLY when no CN code provided) -> direct-only by default
     const cbamDefaultValues = { steel:2.80, aluminium:11.50, cement:0.97, fertilizer:1.72, custom:2.00 };
 
-    // CN code normalization and lookup
     const cnIndex = (() => {
       const idx = {};
       for (const [k, v] of Object.entries(cnCodeDatabaseRaw)) {
@@ -599,7 +556,6 @@
       const productDiv = document.createElement('div');
       productDiv.className = 'product-item';
       productDiv.id = `product-${id}`;
-      productDiv.style.cssText = 'background:white; border:2px solid #060496; border-radius:8px; padding:15px; margin:10px 0;';
 
       productDiv.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -624,11 +580,11 @@
           </div>
           <div>
             <label style="display:block; margin-bottom:5px; font-weight:600;">Jährliche Tonnage:</label>
-            <input type="number" id="tonnage-${id}" placeholder="z.B. 1000" min="0" oninput="updateProductCostPreview(${id}); updateCostSummary();" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+            <input type="number" id="tonnage-${id}" placeholder="z.B. 1000" min="0" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
           </div>
           <div>
-            <label style="display:block; margin-bottom:5px; font-weight:600;">Verwendete Emissionen (tCO₂/t):</label>
-            <input type="number" id="emissions-${id}" step="0.01" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; background:#f8f9fa;" readonly>
+            <label style="display:block; margin-bottom:5px; font-weight:600;">Emissionsfaktor (tCO₂/t):</label>
+            <input type="number" id="emissions-${id}" step="0.01" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
           </div>
           <div>
             <label style="display:block; margin-bottom:5px; font-weight:600;">Benchmark (tCO₂/t):</label>
@@ -640,9 +596,6 @@
         <div id="product-info-${id}" style="margin-top:10px; padding:10px; background:#e3f2fd; border-radius:5px; display:none;">
           <small id="product-details-${id}"></small>
         </div>
-        <div id="cost-preview-${id}" style="margin-top:10px; padding:10px; background:#f8f9fa; border-radius:5px; display:none;">
-          <small style="color:#666;">Geschätzte jährliche CBAM-Kosten 2026: <span id="cost-text-${id}"></span></small>
-        </div>
       `;
       container.appendChild(productDiv);
     }
@@ -653,21 +606,9 @@
       updateCostSummary();
     }
 
-    function toggleIndirect() {
-      includeIndirect = document.getElementById('include-indirect').checked;
-      document.querySelectorAll('.product-item').forEach(item => {
-        const id = item.id.split('-')[1];
-        applyEffectiveEmissions(id);
-        updateProductCostPreview(id);
-      });
-      updateCostSummary();
-    }
-
     function applyEffectiveEmissions(id) {
       const dir = parseFloat(document.getElementById(`direct-${id}`).value || '0');
-      const ind = parseFloat(document.getElementById(`indirect-${id}`).value || '0');
-      const eff = includeIndirect ? (dir + ind) : dir;
-      document.getElementById(`emissions-${id}`).value = eff ? eff.toFixed(2) : '';
+      document.getElementById(`emissions-${id}`).value = dir ? dir.toFixed(2) : '';
     }
 
     function updateFromCNCode(id) {
@@ -687,7 +628,7 @@
 
         directInput.value = (data.direct ?? 0);
         indirectInput.value = (data.indirect ?? 0);
-        applyEffectiveEmissions(id);
+        emissionsInput.value = (data.direct ?? 0).toFixed(2);
 
         benchmarkInput.value = data.benchmark ? Number(data.benchmark).toFixed(3) : 0;
 
@@ -709,8 +650,6 @@
         emissionsInput.value = '';
         benchmarkInput.value = 0;
       }
-      updateProductCostPreview(id);
-      updateCostSummary();
     }
 
     function updateProductType(id) {
@@ -719,318 +658,334 @@
       const benchmarkInput = document.getElementById(`benchmark-${id}`);
       const directInput = document.getElementById(`direct-${id}`);
       const indirectInput = document.getElementById(`indirect-${id}`);
+      const emissionsInput = document.getElementById(`emissions-${id}`);
 
       if (cncode && findCN(cncode)) return;
 
-      if (category) {
-        const d = cbamDefaultValues[category] ?? cbamDefaultValues.custom;
-        directInput.value = d;
+      if (category && cbamDefaultValues[category]) {
+        emissionsInput.value = cbamDefaultValues[category].toFixed(2);
+        directInput.value = cbamDefaultValues[category];
         indirectInput.value = 0;
         benchmarkInput.value = 0;
-        applyEffectiveEmissions(id);
-      } else {
-        directInput.value = '';
-        indirectInput.value = '';
-        document.getElementById(`emissions-${id}`).value = '';
-        benchmarkInput.value = 0;
       }
-      updateProductCostPreview(id);
-      updateCostSummary();
     }
 
-    function calculateCBAMCost(tonnage, emissionsEff, benchmark, euaPrice, year) {
-      const phaseIn = cbamPhaseIn[year] || 1.0;
-      const bm = benchmark || 0;
-      const cbamEmissions = Math.max(0, emissionsEff - (bm * phaseIn));
-      return tonnage * cbamEmissions * euaPrice;
+    function submitGapAnalysisData(data) {
+      // Google Sheets submission for gap analysis
+      // In a production environment, this would call your Google Apps Script web app
+      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+      
+      // For demonstration, we'll log the data that would be sent
+      console.log('Gap analysis data to submit:', data);
+      
+      // Actual submission code (uncomment and configure with your script URL):
+      /*
+      fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      }).catch(error => {
+        console.error('Error submitting to Google Sheets:', error);
+      });
+      */
     }
 
     function updateProductCostPreview(id) {
-      const tonnage = parseFloat(document.getElementById(`tonnage-${id}`).value) || 0;
-      const emissions = parseFloat(document.getElementById(`emissions-${id}`).value) || 0;
-      const benchmark = parseFloat(document.getElementById(`benchmark-${id}`).value) || 0;
+      const tonnage = parseFloat(document.getElementById(`tonnage-${id}`).value || '0');
+      const emissions = parseFloat(document.getElementById(`emissions-${id}`).value || '0');
+      const benchmark = parseFloat(document.getElementById(`benchmark-${id}`).value || '0');
       const preview = document.getElementById(`cost-preview-${id}`);
-      const text = document.getElementById(`cost-text-${id}`);
+      const costText = document.getElementById(`cost-text-${id}`);
 
       if (tonnage > 0 && emissions > 0) {
-        const cost2026 = Math.round(calculateCBAMCost(tonnage, emissions, benchmark, co2Prices[2026], 2026));
-        text.textContent = `€${cost2026.toLocaleString()}`;
+        const effectiveEmissions = Math.max(0, emissions - benchmark);
+        const cost2026 = tonnage * effectiveEmissions * co2Prices[2026] * cbamPhaseIn[2026];
+        costText.textContent = `€${cost2026.toLocaleString('de-DE', {maximumFractionDigits: 0})}`;
         preview.style.display = 'block';
       } else {
         preview.style.display = 'none';
       }
     }
 
-    function getAllProducts() {
-      const out = [];
-      document.querySelectorAll('.product-item').forEach(item => {
-        const id = item.id.split('-')[1];
-        const category = document.getElementById(`category-${id}`).value;
-        const tonnage = parseFloat(document.getElementById(`tonnage-${id}`).value) || 0;
-        const emissions = parseFloat(document.getElementById(`emissions-${id}`).value) || 0;
-        const benchmark = parseFloat(document.getElementById(`benchmark-${id}`).value) || 0;
-        const cncode = document.getElementById(`cncode-${id}`).value.trim();
-        if (category && tonnage > 0 && emissions > 0) {
-          out.push({ id, category, tonnage, emissions, benchmark, cncode });
-        }
-      });
-      return out;
-    }
-
     function updateCostSummary() {
-      const products = getAllProducts();
-      const summary = document.getElementById('cost-summary');
-      const content = document.getElementById('total-costs-content');
+      const products = [];
+      for (let i = 1; i <= productCounter; i++) {
+        const tonnageEl = document.getElementById(`tonnage-${i}`);
+        const emissionsEl = document.getElementById(`emissions-${i}`);
+        const benchmarkEl = document.getElementById(`benchmark-${i}`);
+        
+        if (tonnageEl && emissionsEl && benchmarkEl) {
+          const tonnage = parseFloat(tonnageEl.value || '0');
+          const emissions = parseFloat(emissionsEl.value || '0');
+          const benchmark = parseFloat(benchmarkEl.value || '0');
+          
+          if (tonnage > 0 && emissions > 0) {
+            products.push({ id: i, tonnage, emissions, benchmark });
+          }
+        }
+      }
+
+      const summaryDiv = document.getElementById('cost-summary');
+      const contentDiv = document.getElementById('total-costs-content');
       const chartContainer = document.getElementById('cost-chart-container');
 
       if (products.length === 0) {
-        summary.style.display = 'none';
-        chartContainer.style.display = 'none';
+        summaryDiv.style.display = 'none';
         return;
       }
 
-      const years = Object.keys(co2Prices).map(y=>parseInt(y,10)).sort((a,b)=>a-b);
-      const costs = {};
-      years.forEach(year => {
-        costs[year] = products.reduce((sum, p) =>
-          sum + calculateCBAMCost(p.tonnage, p.emissions, p.benchmark, co2Prices[year], year)
-        , 0);
+      let totalCosts = {};
+      let totalTonnage = 0;
+      
+      for (const year of Object.keys(co2Prices)) {
+        totalCosts[year] = 0;
+      }
+
+      products.forEach(p => {
+        totalTonnage += p.tonnage;
+        const effectiveEmissions = Math.max(0, p.emissions - p.benchmark);
+        
+        for (const year of Object.keys(co2Prices)) {
+          const yearInt = parseInt(year);
+          totalCosts[year] += p.tonnage * effectiveEmissions * co2Prices[yearInt] * cbamPhaseIn[yearInt];
+        }
       });
 
-      content.innerHTML = `
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px;">
-          <div style="text-align:center;"><h4>2026</h4><p style="font-size:1.5em; margin:10px 0;">€${Math.round(costs[2026]).toLocaleString()}</p><small>90€/tCO₂ (Phase-in: 97.5%)</small></div>
-          <div style="text-align:center;"><h4>2030</h4><p style="font-size:1.5em; margin:10px 0;">€${Math.round(costs[2030]).toLocaleString()}</p><small>138€/tCO₂</small></div>
-          <div style="text-align:center;"><h4>2034</h4><p style="font-size:1.5em; margin:10px 0;">€${Math.round(costs[2034]).toLocaleString()}</p><small>178€/tCO₂</small></div>
-        </div>
-        <p style="margin-top:15px; text-align:center; color:#ffeb3b;">
-          <strong>Kostensteigerung 2026-2034: +${Math.round(((costs[2034]-costs[2026])/Math.max(1,costs[2026]))*100)}%</strong>
-        </p>
+      contentDiv.innerHTML = `
+        <p><strong>Gesamttonnage:</strong> ${totalTonnage.toLocaleString('de-DE')} t/Jahr</p>
+        <p><strong>Geschätzte CBAM-Kosten 2026:</strong> €${totalCosts[2026].toLocaleString('de-DE', {maximumFractionDigits: 0})}</p>
+        <p><strong>Geschätzte CBAM-Kosten 2030:</strong> €${totalCosts[2030].toLocaleString('de-DE', {maximumFractionDigits: 0})}</p>
+        <p><strong>Kumulative Kosten 2026-2030:</strong> €${Object.values(totalCosts).slice(0, 5).reduce((a,b) => a+b, 0).toLocaleString('de-DE', {maximumFractionDigits: 0})}</p>
       `;
-      summary.style.display = 'block';
-      chartContainer.style.display = 'block';
-      setTimeout(()=>createCostChart(costs, years), 50);
-    }
 
-    function createCostChart(costs, yearsArr) {
-      const canvas = document.getElementById('costProjectionChart');
-      if (!canvas) return;
-      if (typeof Chart === 'undefined') return;
+      // Create cost projection chart
+      if (costProjectionChart) {
+        costProjectionChart.destroy();
+      }
 
-      const years = yearsArr || Object.keys(costs).map(y=>parseInt(y,10)).sort((a,b)=>a-b);
-      const vals = years.map(y => costs[y]);
+      const years = Object.keys(totalCosts);
+      const costs = Object.values(totalCosts);
 
-      if (costProjectionChart && typeof costProjectionChart.destroy === 'function') costProjectionChart.destroy();
-      const ctx = canvas.getContext('2d');
+      const ctx = document.getElementById('costProjectionChart').getContext('2d');
       costProjectionChart = new Chart(ctx, {
         type: 'line',
-        data: { 
-          labels: years.map(String), 
-          datasets: [{ 
-            label:'CBAM Kosten', 
-            data: vals, 
-            borderColor:'#ff6b35', 
-            backgroundColor:'rgba(255,107,53,0.1)', 
-            tension:0.4, 
-            borderWidth:2, 
-            pointRadius:4, 
-            pointBackgroundColor:'#ff6b35', 
-            fill:true 
-          }] 
+        data: {
+          labels: years,
+          datasets: [{
+            label: 'CBAM-Kosten (€)',
+            data: costs,
+            borderColor: '#060496',
+            backgroundColor: 'rgba(6, 4, 150, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
         },
         options: {
-          responsive:true, 
-          maintainAspectRatio:false,
-          plugins:{ 
-            legend:{ display:false },
-            grid: { display: true }
-          },
-          scales:{
-            x:{ 
-              title:{ display:true, text:'Jahr', color:'#333', font:{size:12} }, 
-              ticks:{ color:'#333', font:{size:11} }, 
-              grid:{ color:'rgba(0,0,0,0.1)', lineWidth:1 }
-            },
-            y:{ 
-              title:{ display:true, text:'Kosten (€)', color:'#333', font:{size:12} }, 
-              beginAtZero:true, 
-              ticks:{ 
-                color:'#333', 
-                font:{size:11},
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
                 callback: function(value) {
-                  return '€' + Math.round(value).toLocaleString();
+                  return '€' + value.toLocaleString('de-DE');
                 }
-              }, 
-              grid:{ color:'rgba(0,0,0,0.1)', lineWidth:1 }
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'CBAM-Kostenprognose'
             }
           }
         }
       });
+
+      chartContainer.style.display = 'block';
+      summaryDiv.style.display = 'block';
     }
 
-    function selectStatus(el) {
-      el.parentNode.querySelectorAll('.status-option').forEach(s => s.classList.remove('selected'));
-      el.classList.add('selected');
+    function selectStatus(element, questionId, status) {
+      // Remove selected class from siblings
+      const siblings = element.parentNode.querySelectorAll('.status-option');
+      siblings.forEach(s => s.classList.remove('selected'));
+      
+      // Add selected class to clicked element
+      element.classList.add('selected');
+      
+      // Store answer
+      analysisAnswers[questionId] = status;
     }
 
-    function validateInputs() {
-      let ok = true;
-      document.querySelectorAll('.info-input').forEach(i=>i.classList.remove('validation-error'));
-      document.querySelectorAll('.error-message').forEach(e=>e.textContent='');
-      const req = [{id:'company-name',name:'Firmenname'},{id:'contact-name',name:'Ihr Name'},{id:'contact-email',name:'E-Mail'}];
-      req.forEach(f=>{
-        const el = document.getElementById(f.id);
-        if (!el.value.trim()) { el.classList.add('validation-error'); document.getElementById(f.id+'-error').textContent = f.name + ' ist erforderlich'; ok=false; }
-      });
-      const email = document.getElementById('contact-email');
-      if (email.value && !email.value.includes('@')) { email.classList.add('validation-error'); document.getElementById('contact-email-error').textContent='Bitte geben Sie eine gültige E-Mail-Adresse ein'; ok=false; }
-      return ok;
-    }
+    function validateCompanyInfo() {
+      let isValid = true;
+      const fields = [
+        { id: 'company-name', required: true },
+        { id: 'contact-name', required: true },
+        { id: 'contact-email', required: true }
+      ];
 
-    function collectComplianceResponses() {
-      const qs = document.querySelectorAll('#compliance-analysis .question-block');
-      const res = [];
-      qs.forEach(q=>{
-        const title = q.querySelector('.question-title').textContent;
-        const sel = q.querySelector('.status-option.selected');
-        if (sel) {
-          let status='unknown';
-          if (sel.classList.contains('status-have')) status='have';
-          else if (sel.classList.contains('status-partial')) status='partial';
-          else if (sel.classList.contains('status-need')) status='need';
-          res.push({ question:title, status, text:sel.textContent.trim() });
+      fields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const errorDiv = document.getElementById(field.id + '-error');
+        
+        if (field.required && !input.value.trim()) {
+          input.classList.add('validation-error');
+          errorDiv.textContent = 'Dieses Feld ist erforderlich';
+          isValid = false;
+        } else if (field.id === 'contact-email' && input.value.trim() && !input.value.includes('@')) {
+          input.classList.add('validation-error');
+          errorDiv.textContent = 'Bitte geben Sie eine gültige E-Mail-Adresse ein';
+          isValid = false;
+        } else {
+          input.classList.remove('validation-error');
+          errorDiv.textContent = '';
         }
       });
-      return res;
-    }
 
-    function calculateReadinessScore(responses) {
-      let score=0; responses.forEach(r=>{ if (r.status==='have') score+=2; else if (r.status==='partial') score+=1; });
-      const max = responses.length*2; return Math.round((score/Math.max(1,max))*100);
+      return isValid;
     }
 
     function generateResults() {
-      if (!validateInputs()) return;
-      const responses = collectComplianceResponses();
-      if (responses.length===0) { alert('Bitte beantworten Sie mindestens eine Frage im Compliance-Check.'); return; }
-      const percentage = calculateReadinessScore(responses);
-      const products = getAllProducts();
-      const resultsContent = generateResultsContent(percentage, responses, products);
-      document.getElementById('results-content').innerHTML = resultsContent;
+      if (!validateCompanyInfo()) {
+        alert('Bitte füllen Sie alle Pflichtfelder aus.');
+        return;
+      }
+
+      const totalQuestions = 8;
+      const answeredQuestions = Object.keys(analysisAnswers).length;
+      
+      if (answeredQuestions < totalQuestions) {
+        alert(`Bitte beantworten Sie alle ${totalQuestions} Fragen der Gap-Analyse.`);
+        return;
+      }
+
+      const results = calculateResults();
+      displayResults(results);
+      
       document.getElementById('results').style.display = 'block';
-      document.getElementById('results').scrollIntoView({ behavior:'smooth' });
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function generateResultsContent(percentage, responses, products) {
-      const companyName = document.getElementById('company-name').value;
-      let level='Niedrig', color='#e74c3c';
-      if (percentage>=70){ level='Hoch'; color='#27ae60'; } else if (percentage>=40){ level='Mittel'; color='#f39c12'; }
+    function calculateResults() {
+      const scores = { have: 0, partial: 0, need: 0 };
+      
+      Object.values(analysisAnswers).forEach(answer => {
+        scores[answer]++;
+      });
 
-      let content = `
+      const readinessScore = (scores.have * 2 + scores.partial * 1) / (8 * 2) * 100;
+      
+      return {
+        scores,
+        readinessScore: Math.round(readinessScore),
+        totalQuestions: 8
+      };
+    }
+
+    function displayResults(results) {
+      const content = document.getElementById('results-content');
+      
+      let readinessLevel, recommendations;
+      
+      if (results.readinessScore >= 75) {
+        readinessLevel = "Fortgeschrittene Vorbereitung";
+        recommendations = [
+          "Detaillierte Verifizierung bestehender Systeme durch Experten erforderlich",
+          "Komplexe Optimierungsstrategien für Kostenminimierung entwickeln",
+          "Spezialisierte Audit-Vorbereitung für 2026",
+          "Fortgeschrittene Lieferanten-Dekarbonisierungsstrategien implementieren"
+        ];
+      } else if (results.readinessScore >= 50) {
+        readinessLevel = "Grundlagen vorhanden, spezialisierte Unterstützung erforderlich";
+        recommendations = [
+          "Professionelle Lückenanalyse und Implementierungsplanung notwendig",
+          "Spezialisierte IT-Systemintegration für CBAM-Datenmanagement",
+          "Rechtliche Compliance-Struktur durch Experten entwickeln lassen",
+          "Komplexe Lieferanten-Engagement-Programme professionell aufsetzen"
+        ];
+      } else {
+        readinessLevel = "Umfassende professionelle Begleitung dringend erforderlich";
+        recommendations = [
+          "Sofortige professionelle CBAM-Beratung und Projektplanung notwendig",
+          "Systematischer Aufbau aller erforderlichen Strukturen durch Experten",
+          "Dringende Implementierung von Datensammlung und Compliance-Systemen",
+          "Vollständige CBAM-Implementierungsbegleitung durch spezialisierte Berater"
+        ];
+      }
+
+      content.innerHTML = `
         <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin-bottom:20px;">
-          <h3>CBAM-Compliance-Zusammenfassung</h3>
-          <p><strong>Unternehmen:</strong> ${companyName}</p>
-          <p><strong>Anzahl CBAM-Produkte:</strong> ${products.length}</p>
-          <p><strong>Compliance-Bereitschaftsgrad:</strong> <span style="color:${color}; font-weight:bold;">${percentage}% - ${level}</span></p>
-        </div>
-      `;
-
-      const need = responses.filter(r=>r.status==='need');
-      const part = responses.filter(r=>r.status==='partial');
-
-      if (need.length>0){
-        content += `<div class="action-item"><h4>Kritische Compliance-Lücken</h4><ul style="margin:10px 0; line-height:1.8;">${need.map(a=>`<li>${a.question.replace(/^\d+\.\s*/,'')}</li>`).join('')}</ul><p><strong>Dringlichkeit:</strong> Vor Januar 2026 vollständig implementieren.</p></div>`;
-      }
-      if (part.length>0){
-        content += `<div class="action-item"><h4>Verbesserungsbereiche</h4><ul style="margin:10px 0; line-height:1.8;">${part.map(a=>`<li>${a.question.replace(/^\d+\.\s*/,'')}</li>`).join('')}</ul><p><strong>Empfehlung:</strong> Vollständige Implementierung bis Q3 2025.</p></div>`;
-      }
-
-      if (products.length>0){
-        const totalTonnage = products.reduce((s,p)=>s+p.tonnage,0);
-        const years = Object.keys(co2Prices).map(y=>parseInt(y,10)).sort((a,b)=>a-b);
-        const costs = {}; years.forEach(y=>{
-          costs[y] = products.reduce((sum,p)=>sum + calculateCBAMCost(p.tonnage,p.emissions,p.benchmark,co2Prices[y],y), 0);
-        });
-        content += `
-          <div class="action-item">
-            <h4>CBAM-Kostenschätzung</h4>
-            <p><strong>Gesamttonnage:</strong> ${totalTonnage.toLocaleString()} t/Jahr</p>
-            <p><strong>2026:</strong> €${Math.round(costs[2026]).toLocaleString()} (mit 97,5% Phase-in)</p>
-            <p><strong>2030:</strong> €${Math.round(costs[2030]).toLocaleString()}</p>
-            <p><strong>2034:</strong> €${Math.round(costs[2034]).toLocaleString()}</p>
-            <p style="margin-top:10px; color:#ffeb3b; font-weight:bold;">Kostensteigerung 2026-2034: +${Math.round(((costs[2034]-costs[2026])/Math.max(1,costs[2026]))*100)}%</p>
-            <div style="background:rgba(255,193,7,0.2); padding:10px; border-radius:5px; margin-top:10px;">
-              <small><strong>Hinweis:</strong> Schätzungen basieren auf aktuellem regulatorischen Rahmen. Tool befindet sich in der Entwicklung - bitte Berechnungen unabhängig prüfen.</small>
-            </div>
+          <h3>CBAM-Bereitschaftsgrad: ${results.readinessScore}%</h3>
+          <p><strong>Bewertung:</strong> ${readinessLevel}</p>
+          <div style="background:rgba(255,255,255,0.2); padding:15px; border-radius:8px; margin-top:15px;">
+            <p><strong>Bewertungsübersicht:</strong></p>
+            <p>Bereit: ${results.scores.have} Bereiche</p>
+            <p>Teilweise: ${results.scores.partial} Bereiche</p>
+            <p>Handlungsbedarf: ${results.scores.need} Bereiche</p>
           </div>
-        `;
-      }
-
-      content += `
+        </div>
         <div class="action-item">
-          <h4>Empfohlene nächste Schritte</h4>
-          <ol style="margin:10px 0; line-height:1.8;">
-            <li><strong>Sofort:</strong> CBAM-Deklarant-Autorisierung beantragen (ab März 2025)</li>
-            <li><strong>Q1 2025:</strong> Lieferanten-Engagement-Programm starten</li>
-            <li><strong>Q2 2025:</strong> Interne CBAM-Prozesse und IT-Systeme implementieren</li>
-            <li><strong>Q3 2025:</strong> Pilot mit Verifizierer durchführen</li>
-            <li><strong>Q4 2025:</strong> Testläufe und Budgetplanung 2026</li>
-            <li><strong>Laufend:</strong> CN-Code spezifische Emissionsdaten von Lieferanten sammeln</li>
-          </ol>
-          <p style="margin-top:15px;"><strong>Expertenunterstützung:</strong> info@entrenovu.com</p>
+          <h4>Empfohlene professionelle Unterstützung:</h4>
+          <ul style="margin-top:10px;">
+            ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+          </ul>
+          <p style="margin-top:15px; font-style:italic;">CBAM-Compliance erfordert spezialisierte Expertise in regulatorischen, technischen und operativen Bereichen. Die Komplexität der Anforderungen macht professionelle Begleitung für eine erfolgreiche und kostenoptimierte Implementierung unerlässlich.</p>
         </div>
       `;
-      return content;
     }
 
     function submitToGoogleSheets() {
-      if (!validateInputs()) return;
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true; submitBtn.textContent='Wird gesendet...';
-
-      const responses = collectComplianceResponses();
-      const score = calculateReadinessScore(responses);
-      const products = getAllProducts();
-      const totalImportVolume = products.reduce((s,p)=>s+p.tonnage,0);
-      const costs2026 = products.reduce((sum,p)=> sum + calculateCBAMCost(p.tonnage,p.emissions,p.benchmark,co2Prices[2026],2026), 0);
-
       const companyData = {
-        timestamp: new Date().toISOString(),
-        companyName: document.getElementById('company-name').value,
-        contactName: document.getElementById('contact-name').value,
+        company: document.getElementById('company-name').value,
+        contact: document.getElementById('contact-name').value,
         email: document.getElementById('contact-email').value,
-        suppliers: document.getElementById('eu-buyers').value || 'Nicht angegeben',
-        companySize: document.getElementById('company-size').value || 'Nicht angegeben',
-        readinessScore: score,
-        readinessLevel: score >= 70 ? 'Hoch' : score >= 40 ? 'Mittel' : 'Niedrig',
-        totalImportVolume,
-        numberOfProducts: products.length,
-        estimatedCosts2026: Math.round(costs2026),
-        products: JSON.stringify(products),
-        responses: JSON.stringify(responses),
-        country: 'Austria/Germany',
-        language: 'German',
-        calculationType: 'CN-Code Based Multi-Product Analysis',
-        calculationMethod: '((SEE_direct_or_total) - (ETS_BM × Phase-in)) × EUA price'
+        suppliers: document.getElementById('eu-buyers').value,
+        size: document.getElementById('company-size').value,
+        answers: analysisAnswers,
+        timestamp: new Date().toISOString()
       };
 
-      const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-VhRv-7oPC2b3HImELFmd_nYY6IZ6Eo8H3IWfpmIf88Z6CAY6RkFF9uZL5fBt7qkMlg/exec';
-      fetch(GOOGLE_SCRIPT_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(companyData)})
-        .then(()=>{
-          submitBtn.textContent='Erfolgreich gesendet'; submitBtn.style.background='#27ae60';
-          alert(`Analyse erfolgreich gesendet.\n\nIhre Ergebnisse:\n- Compliance-Bereitschaft: ${score}%\n- Anzahl Produkte: ${products.length}\n- Gesamtvolumen: ${totalImportVolume.toLocaleString()} t/Jahr\n- Geschätzte CBAM-Kosten 2026: €${Math.round(costs2026).toLocaleString()}\n\nEin Experte von Entrenovu wird Sie zeitnah kontaktieren.`);
-          setTimeout(()=>{ submitBtn.disabled=false; submitBtn.textContent='Ergebnisse senden & Beratung anfordern'; submitBtn.style.background='#060496'; },3000);
-        })
-        .catch(err=>{
-          console.error('Fehler beim Senden:', err);
-          submitBtn.textContent='Sendung fehlgeschlagen'; submitBtn.style.background='#e74c3c';
-          alert('Es ist ein Fehler beim Senden aufgetreten. Bitte versuchen Sie es erneut.');
-          setTimeout(()=>{ submitBtn.disabled=false; submitBtn.textContent='Ergebnisse senden & Beratung anfordern'; submitBtn.style.background='#060496'; },3000);
-        });
+      // In a real implementation, this would submit to a backend service
+      console.log('Company data to submit:', companyData);
+      
+      // Show success message
+      const btn = document.getElementById('submitBtn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Gesendet! Wir melden uns bald.';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 3000);
+      
+      // Open email client with results
+      const subject = encodeURIComponent('CBAM Gap-Analyse Ergebnisse - ' + companyData.company);
+      const body = encodeURIComponent(`Sehr geehrte Damen und Herren,
+
+anbei die Ergebnisse unserer CBAM Gap-Analyse:
+
+Unternehmen: ${companyData.company}
+Kontakt: ${companyData.contact}
+E-Mail: ${companyData.email}
+
+Wir würden gerne einen Beratungstermin vereinbaren, um eine maßgeschneiderte CBAM-Implementierungsstrategie zu entwickeln.
+
+Mit freundlichen Grüßen
+${companyData.contact}`);
+      
+      window.open(`mailto:info@entrenovu.com?subject=${subject}&body=${body}`);
     }
 
-    // Initialize
-    window.addEventListener('load', ()=>{ addProduct(); });
+    // Initialize with one product
+    window.onload = function() {
+      addProduct();
+    };
   </script>
 </body>
 </html>
