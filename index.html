@@ -1099,6 +1099,7 @@
 
       // Prepare complete data object matching Apps Script expectations
       const dataToSubmit = {
+        language: 'de',
         timestamp: new Date().toISOString(),
         companyName: document.getElementById('company-name').value,
         sector: sector,
@@ -1116,7 +1117,7 @@
       };
 
       // Google Sheets submission
-      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwravi5VP3KpGZg-abdEfySlO7nem94xQ41cVGjMPQjjVVIGXLOmMWOUWifW_H6vUQBjA/exec';
+      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTAIAVtW6nEIoyrffW2yk9XYH1Cw8UbpnlWA-MA-LUMe3VITZw2F-q9gltSu33oINSdw/exec';
       
       console.log('Data to submit:', dataToSubmit);
       
