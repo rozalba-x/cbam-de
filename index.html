@@ -188,7 +188,7 @@
     </div>
 
     <div style="background:linear-gradient(135deg, #060496 0%, #4338ca 100%); color:white; padding:30px; border-radius:20px; margin:25px 0; box-shadow:0 10px 30px rgba(6,4,150,0.2);">
-      <h2 style="margin-bottom:20px; font-weight:600; text-align:center;">CBAM-Kostenprognose</h2>
+      <h2 style="margin-bottom:20px; font-weight:600;">CBAM-Kostenprognose</h2>
       <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:15px; backdrop-filter:blur(10px);">
         <div class="projection-grid">
           <div class="projection-card" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2);">
@@ -310,10 +310,6 @@
     <div class="results-section" id="results" style="display:none;">
       <h2 style="margin-bottom:20px;">Ergebnisse der CBAM Gap-Analyse</h2>
       <div id="results-content"></div>
-      <div style="text-align:center; margin-top:30px;">
-        <button class="generate-btn" onclick="submitToGoogleSheets()" id="submitBtn">Ergebnisse senden & Beratung anfordern</button>
-        <p style="margin-top:10px; font-size:0.9em;">Die Ergebnisse werden zur detaillierten Analyse gesendet</p>
-      </div>
     </div>
 
     <button class="generate-btn" onclick="generateResults()">Gap-Analyse erstellen</button>
@@ -521,6 +517,18 @@
     const productCategories = { steel:'Stahl & Eisen', aluminium:'Aluminium', cement:'Zement', fertilizer:'Düngemittel', custom:'Andere' };
     const cbamDefaultValues = { steel:2.80, aluminium:11.50, cement:0.97, fertilizer:1.72, custom:2.00 };
 
+    // Store questions for submission
+    const questions = [
+      "CBAM-Deklarant-Autorisierung",
+      "Lieferanten-Datensammlung & -management",
+      "CBAM-Registry & Berichtssystem",
+      "Interne CBAM-Organisation & Prozesse",
+      "Finanzplanung für CBAM-Zertifikate",
+      "Verifizierung & Audit-Bereitschaft",
+      "Rechtliche & Compliance-Expertise",
+      "IT-Systeme & Datenmanagement"
+    ];
+
     const cnIndex = (() => {
       const idx = {};
       for (const [k, v] of Object.entries(cnCodeDatabaseRaw)) {
@@ -668,25 +676,6 @@
         indirectInput.value = 0;
         benchmarkInput.value = 0;
       }
-    }
-
-    function submitGapAnalysisData(data) {
-      // Google Sheets submission for gap analysis
-      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwravi5VP3KpGZg-abdEfySlO7nem94xQ41cVGjMPQjjVVIGXLOmMWOUWifW_H6vUQBjA/exec';
-      
-      console.log('Gap analysis data to submit:', data);
-      
-      // Submit to Google Sheets
-      fetch(GOOGLE_APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      }).catch(error => {
-        console.error('Error submitting to Google Sheets:', error);
-      });
     }
 
     function updateProductCostPreview(id) {
@@ -862,6 +851,8 @@
 
       const results = calculateResults();
       displayResults(results);
+
+      submitToGoogleSheets(false, null);
       
       document.getElementById('results').style.display = 'block';
       document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
@@ -927,21 +918,73 @@
       // Display results
       displayCostResults(totalCosts, totalTonnage);
     
-      // Submit to Google Sheets
-      submitCalculatorData({
-        company: document.getElementById('company-name').value,
-        contact: document.getElementById('contact-name').value,
-        email: document.getElementById('contact-email').value,
-        suppliers: document.getElementById('eu-buyers').value,
-        size: document.getElementById('company-size').value,
+      // Submit to Google Sheets with all required data
+      submitToGoogleSheets(true, {
         products: products,
         totalTonnage: totalTonnage,
-        cost2026: totalCosts[2026],
-        cost2030: totalCosts[2030],
-        cumulativeCosts: Object.values(totalCosts).slice(0, 5).reduce((a,b) => a+b, 0),
-        timestamp: new Date().toISOString(),
-        type: 'cost_calculator'
+        costs: totalCosts
       });
+    }
+
+    function displayCostResults(totalCosts, totalTonnage) {
+      const contentDiv = document.getElementById('total-costs-content');
+      const chartContainer = document.getElementById('cost-chart-container');
+      const summaryDiv = document.getElementById('cost-summary');
+
+      contentDiv.innerHTML = `
+        <p><strong>Gesamttonnage:</strong> ${totalTonnage.toLocaleString('de-DE')} t/Jahr</p>
+        <p><strong>Geschätzte CBAM-Kosten 2026:</strong> €${totalCosts[2026].toLocaleString('de-DE', {maximumFractionDigits: 0})}</p>
+        <p><strong>Geschätzte CBAM-Kosten 2030:</strong> €${totalCosts[2030].toLocaleString('de-DE', {maximumFractionDigits: 0})}</p>
+        <p><strong>Kumulative Kosten 2026-2030:</strong> €${Object.values(totalCosts).slice(0, 5).reduce((a,b) => a+b, 0).toLocaleString('de-DE', {maximumFractionDigits: 0})}</p>
+      `;
+
+      // Create cost projection chart
+      if (costProjectionChart) {
+        costProjectionChart.destroy();
+      }
+
+      const years = Object.keys(totalCosts);
+      const costs = Object.values(totalCosts);
+
+      const ctx = document.getElementById('costProjectionChart').getContext('2d');
+      costProjectionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [{
+            label: 'CBAM-Kosten (€)',
+            data: costs,
+            borderColor: '#060496',
+            backgroundColor: 'rgba(6, 4, 150, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '€' + value.toLocaleString('de-DE');
+                }
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'CBAM-Kostenprognose'
+            }
+          }
+        }
+      });
+
+      chartContainer.style.display = 'block';
+      summaryDiv.style.display = 'block';  
+      summaryDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
     function calculateResults() {
@@ -1011,48 +1054,90 @@
         </div>
       `;
     }
+    
+    function submitToGoogleSheets(fromCostCalculator = false, costData = null) {
+      if (!validateCompanyInfo()) {
+        alert('Bitte füllen Sie alle Pflichtfelder aus.');
+        return;
+      }
 
-    function submitToGoogleSheets() {
-      const companyData = {
-        company: document.getElementById('company-name').value,
-        contact: document.getElementById('contact-name').value,
+
+      // Prepare responses array for Apps Script
+      const responses = [];
+      for (let i = 1; i <= questions.length; i++) {
+        if (analysisAnswers[i]) {
+          responses.push({
+            question: questions[i - 1],
+            status: analysisAnswers[i]
+          });
+        }
+      }
+
+      // Get primary sector from products if available
+      let sector = '';
+      let sectorName = '';
+      if (costData && costData.products && costData.products.length > 0) {
+        const primaryProduct = costData.products[0];
+        sector = primaryProduct.category;
+        sectorName = productCategories[primaryProduct.category] || primaryProduct.category;
+      }
+
+      // Calculate readiness if gap analysis was done
+      let readinessScore = 0;
+      let readinessLevel = '';
+      if (responses.length > 0) {
+        const results = calculateResults();
+        readinessScore = results.readinessScore;
+        if (readinessScore >= 75) {
+          readinessLevel = "Hoch";
+        } else if (readinessScore >= 50) {
+          readinessLevel = "Mittel";  
+        } else {
+          readinessLevel = "Niedrig";
+        }
+      }
+
+      // Prepare complete data object matching Apps Script expectations
+      const dataToSubmit = {
+        timestamp: new Date().toISOString(),
+        companyName: document.getElementById('company-name').value,
+        sector: sector,
+        sectorName: sectorName,
+        exportVolume: costData ? costData.totalTonnage : 0,
+        contactName: document.getElementById('contact-name').value,
         email: document.getElementById('contact-email').value,
-        suppliers: document.getElementById('eu-buyers').value,
-        size: document.getElementById('company-size').value,
-        answers: analysisAnswers,
-        timestamp: new Date().toISOString()
+        euBuyers: document.getElementById('eu-buyers').value,
+        readinessScore: readinessScore,
+        readinessLevel: readinessLevel,
+        estimatedCost2026: costData ? Math.round(costData.costs[2026]) : 0,
+        estimatedCost2030: costData ? Math.round(costData.costs[2030]) : 0,
+        estimatedCost2034: costData ? Math.round(costData.costs[2034]) : 0,
+        responses: responses
       };
 
-      // In a real implementation, this would submit to a backend service
-      console.log('Company data to submit:', companyData);
+      // Google Sheets submission
+      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwravi5VP3KpGZg-abdEfySlO7nem94xQ41cVGjMPQjjVVIGXLOmMWOUWifW_H6vUQBjA/exec';
       
-      // Show success message
-      const btn = document.getElementById('submitBtn');
-      const originalText = btn.textContent;
-      btn.textContent = 'Gesendet! Wir melden uns bald.';
-      btn.disabled = true;
+      console.log('Data to submit:', dataToSubmit);
       
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }, 3000);
-      
-      // Open email client with results
-      const subject = encodeURIComponent('CBAM Gap-Analyse Ergebnisse - ' + companyData.company);
-      const body = encodeURIComponent(`Sehr geehrte Damen und Herren,
-
-anbei die Ergebnisse unserer CBAM Gap-Analyse:
-
-Unternehmen: ${companyData.company}
-Kontakt: ${companyData.contact}
-E-Mail: ${companyData.email}
-
-Wir würden gerne einen Beratungstermin vereinbaren, um eine maßgeschneiderte CBAM-Implementierungsstrategie zu entwickeln.
-
-Mit freundlichen Grüßen
-${companyData.contact}`);
-      
-      window.open(`mailto:info@entrenovu.com?subject=${subject}&body=${body}`);
+      // Submit to Google Sheets
+      fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSubmit)
+      }).then(() => {
+        if (fromCostCalculator) {
+          alert('Kostenschätzung wurde erfolgreich berechnet und Ihre Daten gespeichert.');
+        } else {
+          alert('Vielen Dank! Ihre Gap-Analyse wurde erfolgreich übermittelt. Wir werden uns in Kürze bei Ihnen melden.');
+        }
+      }).catch(error => {
+        console.error('Error submitting to Google Sheets:', error);
+        alert('Die Daten wurden verarbeitet, aber es gab ein Problem bei der Übertragung. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.');
+      });
     }
 
     // Initialize with one product
